@@ -10,6 +10,6 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello, Express!");
 });
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
