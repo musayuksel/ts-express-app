@@ -1,5 +1,7 @@
 import express, { Request, Response } from "express";
 
+const PORT = 3000; //TODO: move to .env
+
 const app = express();
 
 app.get("/", (req: Request, res: Response) => {
@@ -7,5 +9,5 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+  console.log(`Server is running on port ${PORT}`);
 });
