@@ -9,18 +9,27 @@ export class customError extends Error {
   }
 }
 
+interface ErrorResponse {
+  status: string;
+  message: string;
+}
+// TODO : Move customError and ErrorResponse to a separate file
+
 export const globalErrorHandler = (
   err: customError,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  console.log({ err });
   err.message = err.message || "Something went wrong in our side";
   err.statusCode = err.statusCode || 500;
 
-  res.status(err.statusCode).json({
+  const errorResponse: ErrorResponse = {
     status: err.statusCode < 500 ? "fail" : "error",
     message: err.message,
-  });
+  };
+
+  res.status(err.statusCode).json(errorResponse);
 };
+
+// TODO : Move globalErrorHandler into controllers folder
