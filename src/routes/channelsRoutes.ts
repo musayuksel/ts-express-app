@@ -1,5 +1,6 @@
 import express, { Response } from "express";
 import {
+  addUserToChannel,
   createNewChannel,
   getAllChannels,
 } from "../controllers/channelControllers";
@@ -17,6 +18,14 @@ router.get("/", async (req, res: Response, next) => {
 router.post("/", async (req, res: Response, next) => {
   try {
     await createNewChannel(req, res);
+  } catch (error) {
+    next(error);
+  }
+});
+// Add new user to channel
+router.post("/addUser", async (req, res: Response, next) => {
+  try {
+    await addUserToChannel(req, res);
   } catch (error) {
     next(error);
   }
