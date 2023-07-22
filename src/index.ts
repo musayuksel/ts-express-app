@@ -6,11 +6,10 @@ import {
   customError,
   globalErrorHandler,
 } from "./middlewares/globalErrorMiddleware";
-import { Sequelize } from "sequelize";
+import { sequelize, testDbConnection } from "./models/sequelize";
 
 dotenv.config();
 const PORT = parseInt(process.env.PORT || "3000");
-const DB_URL = process.env.DB_URL || "postgres://localhost:5432/slack";
 
 const app = express();
 app.use(express.json());
@@ -25,8 +24,9 @@ app.use("*", (req: Request, res: Response, next: NextFunction) => {
 
 app.use(globalErrorHandler);
 
-const connectDB = async () => {
-  const sequelize = new Sequelize(DB_URL);
+testDbConnection(sequelize);
+
+async function startServer() {
   try {
     await sequelize.authenticate();
     console.log(
@@ -35,9 +35,11 @@ const connectDB = async () => {
   } catch (error) {
     console.error("Unable to connect to the database:", error);
   }
-};
-connectDB();
+  await sequelize.sync({ force: true });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+startServer();
