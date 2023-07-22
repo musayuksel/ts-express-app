@@ -24,14 +24,9 @@ app.use("*", (req: Request, res: Response, next: NextFunction) => {
 
 app.use(globalErrorHandler);
 
-testDbConnection(sequelize);
-
 async function startServer() {
   try {
-    await sequelize.authenticate();
-    console.log(
-      `Connected to ${sequelize.getDatabaseName()} postgres database`
-    );
+    await testDbConnection(sequelize);
   } catch (error) {
     console.error("Unable to connect to the database:", error);
   }
