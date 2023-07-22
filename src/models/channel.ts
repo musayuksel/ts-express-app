@@ -1,7 +1,18 @@
-import { Model, DataTypes } from "sequelize";
+import {
+  Model,
+  DataTypes,
+  HasManyAddAssociationMixin,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 import { sequelize } from "./sequelize";
 import { User } from "./user";
-class Channel extends Model {}
+class Channel extends Model<
+  InferAttributes<User>,
+  InferCreationAttributes<User>
+> {
+  declare addUser: HasManyAddAssociationMixin<User, number>;
+}
 Channel.init(
   {
     id: {
@@ -20,5 +31,4 @@ Channel.init(
 
 Channel.belongsToMany(User, { through: "UserChannel" });
 User.belongsToMany(Channel, { through: "UserChannel" });
-
 export { Channel };
