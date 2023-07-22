@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import healthCheckRoutes from "./routes/healthCheckRoutes";
 import messagesRoutes from "./routes/messagesRoutes";
+import usersRoutes from "./routes/usersRoutes";
 import {
   customError,
   globalErrorHandler,
@@ -16,6 +17,7 @@ app.use(express.json());
 
 app.use("/api/health-check", healthCheckRoutes);
 app.use("/api/messages", messagesRoutes);
+app.use("/api/users", usersRoutes);
 
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
   const error = new customError(`Route ${req.originalUrl} not found!!!`, 404);
