@@ -1,7 +1,13 @@
-import { Model, DataTypes } from "sequelize";
+import { Model, DataTypes, CreationOptional } from "sequelize";
 import { sequelize } from "./sequelize";
 
-class User extends Model {}
+class User extends Model {
+  declare id: CreationOptional<number>;
+  declare userName: string;
+  declare userEmail: string;
+  declare firstName: string;
+  declare lastName: string;
+}
 
 User.init(
   {

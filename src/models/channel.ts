@@ -4,14 +4,18 @@ import {
   HasManyAddAssociationMixin,
   InferAttributes,
   InferCreationAttributes,
+  CreationOptional,
 } from "sequelize";
 import { sequelize } from "./sequelize";
 import { User } from "./user";
+
 class Channel extends Model<
-  InferAttributes<User>,
-  InferCreationAttributes<User>
+  InferAttributes<Channel>,
+  InferCreationAttributes<Channel>
 > {
   declare addUser: HasManyAddAssociationMixin<User, number>;
+  declare id: CreationOptional<number>;
+  declare channelName: string;
 }
 Channel.init(
   {

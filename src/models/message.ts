@@ -4,6 +4,8 @@ import {
   HasManyAddAssociationMixin,
   InferAttributes,
   InferCreationAttributes,
+  CreationOptional,
+  ForeignKey,
 } from "sequelize";
 import { sequelize } from "./sequelize";
 import { User } from "./user";
@@ -15,6 +17,12 @@ class Message extends Model<
 > {
   declare addUser: HasManyAddAssociationMixin<User, number>;
   declare addChannel: HasManyAddAssociationMixin<Channel, number>;
+  declare id: CreationOptional<number>;
+  declare content: string;
+  declare timeStamp: CreationOptional<Date>;
+  declare attachment: string | null;
+  declare UserId: ForeignKey<User>;
+  declare ChannelId: ForeignKey<Channel>;
 }
 
 Message.init(
@@ -33,7 +41,7 @@ Message.init(
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
-    attachments: {
+    attachment: {
       type: DataTypes.ARRAY(DataTypes.STRING),
     },
   },
