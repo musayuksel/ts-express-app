@@ -1,29 +1,23 @@
 import { Request, Response } from "express";
-import messages from "../utils/mockMessages.json";
+import { Message } from "../models/message";
 
-export const getAllMessages = (req: Request, res: Response) => {
+export const getAllMessages = async (req: Request, res: Response) => {
+  const messages = await Message.findAll();
   res.json(messages);
 };
 
-export const getMessageByUserId = (req: Request, res: Response) => {
-  const { userId } = req.params;
-  const userMessages = messages.messages.filter(
-    (message) => message.user_id === userId
-  );
-
-  res.json(userMessages);
+export const getMessageByUserId = async (req: Request, res: Response) => {
+  // TODO: implement this
+  res.json("message by user id");
 };
 
-export const createMessage = (req: Request, res: Response) => {
-  const { content, user_id, time_stamp, attachment } = req.body;
-  const newId = +messages.messages.length + 1 + "";
-  const newMessage = {
-    id: newId,
+export const createMessage = async (req: Request, res: Response) => {
+  const { content, UserId, ChannelId, attachment } = req.body;
+  const newMessage = await Message.create({
     content,
-    user_id,
-    time_stamp,
+    UserId,
+    ChannelId,
     attachment: attachment || null,
-  };
-  messages.messages.push(newMessage);
+  });
   res.json(newMessage);
 };
