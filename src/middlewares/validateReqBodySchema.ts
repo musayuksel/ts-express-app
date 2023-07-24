@@ -4,7 +4,7 @@ import { CustomError } from './globalErrorHandler';
 
 type Schema = ObjectSchema<any>;
 
-export const validateSchema = (schema: Schema) => {
+export const validateReqBodySchema = (schema: Schema) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const { error }: ValidationResult = schema.validate(req.body);
 
