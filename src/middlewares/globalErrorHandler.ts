@@ -24,10 +24,7 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  
-  console.log('i get here plsplspslslps')
-
-  const errorResponse: ErrorResponse = {
+    const errorResponse: ErrorResponse = {
     status: err.statusCode < 500 ? "fail" : "error",
     message: err.message,
   };
