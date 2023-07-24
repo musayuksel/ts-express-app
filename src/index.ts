@@ -5,9 +5,9 @@ import messagesRoutes from "./routes/messagesRoutes";
 import usersRoutes from "./routes/usersRoutes";
 import channelRoutes from "./routes/channelsRoutes";
 import {
-  customError,
+  CustomError,
   globalErrorHandler,
-} from "./middlewares/globalErrorMiddleware";
+} from "./middlewares/globalErrorHandler";
 import { sequelize, testDbConnection } from "./models/sequelize";
 
 dotenv.config();
@@ -22,7 +22,7 @@ app.use("/api/users", usersRoutes);
 app.use("/api/channels", channelRoutes);
 
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
-  const error = new customError(`Route ${req.originalUrl} not found!!!`, 404);
+  const error = new CustomError(`Route ${req.originalUrl} not found!!!`, 404);
   next(error);
 });
 
