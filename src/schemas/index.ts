@@ -1,1 +1,1 @@
-export { channelSchema } from './channel.schema';
+export { channelSchema, messageSchema } from './channel.schema';
