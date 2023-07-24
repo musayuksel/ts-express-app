@@ -7,7 +7,7 @@ import channelRoutes from "./routes/channelsRoutes";
 import {
   CustomError,
   globalErrorHandler,
-} from "./middlewares/middleware";
+} from "./middlewares/globalErrorHandler";
 import { sequelize, testDbConnection } from "./models/sequelize";
 
 dotenv.config();
