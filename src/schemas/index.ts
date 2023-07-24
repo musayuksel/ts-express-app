@@ -1,6 +1,6 @@
 export {
   channelSchema,
   messageSchema,
-  userIdParamScheme,
+  userIdParamSchema,
   userSchema,
 } from './channel.schema';

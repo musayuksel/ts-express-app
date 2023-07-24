@@ -11,7 +11,7 @@ export const messageSchema = Joi.object({
   attachment: Joi.string().allow(null),
 });
 
-export const userIdParamScheme = Joi.object({
+export const userIdParamSchema = Joi.object({
   userId: Joi.string().pattern(new RegExp('^[0-9]+$')).required().messages({
     'string.pattern.base': 'userId must be a number',
   }),
