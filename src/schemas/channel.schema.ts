@@ -10,3 +10,9 @@ export const messageSchema = Joi.object({
   ChannelId: Joi.number().required(),
   attachment: Joi.string().allow(null),
 });
+
+export const userIdParamScheme = Joi.object({
+  userId: Joi.string().pattern(new RegExp('^[0-9]+$')).required().messages({
+    'string.pattern.base': 'userId must be a number',
+  }),
+});

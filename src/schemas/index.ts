@@ -1,1 +1,5 @@
-export { channelSchema, messageSchema } from './channel.schema';
+export {
+  channelSchema,
+  messageSchema,
+  userIdParamScheme,
+} from './channel.schema';
