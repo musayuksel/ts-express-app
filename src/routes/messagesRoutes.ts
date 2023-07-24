@@ -1,16 +1,17 @@
-import express, { Response } from "express";
-import {
-  getAllMessages,
-  getMessageByUserId,
-  createMessage,
-} from "../controllers/messagesController";
-
-import { logBody } from "../middlewares/messageMiddleware";
-
+import express from 'express';
+import { messageController } from '../controllers';
+import { validateSchema } from '../middlewares/validateSchema';
+import { logBody } from '../middlewares/messageMiddleware';
+import { messageSchema } from '../schemas';
 const router = express.Router();
 
-router.get("/", getAllMessages);
-router.get("/:userId", getMessageByUserId);
-router.post("/", logBody, createMessage);
+router.get('/', messageController.getAllMessages);
+router.get('/:userId', messageController.getUserMessages);
+router.post(
+  '/',
+  logBody,
+  validateSchema(messageSchema),
+  messageController.createMessage
+);
 
 export default router;
