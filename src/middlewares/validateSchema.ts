@@ -9,7 +9,7 @@ export const validateSchema = (schema: Schema) => {
     const { error }: ValidationResult = schema.validate(req.body);
 
     if (error) {
-      return next(new CustomError('ValidationError', 400));
+      return next(new CustomError(`ValidationError: ${error.message}`, 403));
     }
 
     next();
