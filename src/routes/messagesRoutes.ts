@@ -1,16 +1,20 @@
 import express from 'express';
 import { messageController } from '../controllers';
-import { validateSchema } from '../middlewares/validateSchema';
+import { validateReqBodySchema } from '../middlewares/validateReqBodySchema';
 import { logBody } from '../middlewares/messageMiddleware';
-import { messageSchema } from '../schemas';
+import { userIdParamScheme, messageSchema } from '../schemas';
 const router = express.Router();
 
 router.get('/', messageController.getAllMessages);
-router.get('/:userId', messageController.getUserMessages);
+router.get(
+  '/:userId',
+  validateReqBodySchema(userIdParamScheme),
+  messageController.getUserMessages
+);
 router.post(
   '/',
   logBody,
-  validateSchema(messageSchema),
+  validateReqBodySchema(messageSchema),
   messageController.createMessage
 );
 
