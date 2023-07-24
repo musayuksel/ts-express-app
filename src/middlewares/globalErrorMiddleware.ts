@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-export class customError extends Error {
+export class CustomError extends Error {
   statusCode: number;
   constructor(message: string, statusCode: number) {
     super(message);
@@ -16,7 +16,7 @@ interface ErrorResponse {
 // TODO : Move customError and ErrorResponse to a separate file
 
 export const globalErrorHandler = (
-  err: customError,
+  err: CustomError,
   req: Request,
   res: Response,
   next: NextFunction
