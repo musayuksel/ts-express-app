@@ -1,34 +1,10 @@
-import express, { Response } from "express";
-import {
-  addUserToChannel,
-  createNewChannel,
-  getAllChannels,
-} from "../controllers/channelControllers";
+import { Router } from 'express';
+import { channelController } from '../controllers';
 
-const router = express.Router();
+const router = Router();
 
-router.get("/", async (req, res: Response, next) => {
-  try {
-    await getAllChannels(req, res);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/", async (req, res: Response, next) => {
-  try {
-    await createNewChannel(req, res);
-  } catch (error) {
-    next(error);
-  }
-});
-// Add new user to channel
-router.post("/addUser", async (req, res: Response, next) => {
-  try {
-    await addUserToChannel(req, res);
-  } catch (error) {
-    next(error);
-  }
-});
+router.get('/', channelController.getAllChannels);
+router.post('/', channelController.createChannel);
+router.post('/addUser', channelController.addUserToChannel);
 
 export default router;

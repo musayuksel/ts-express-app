@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 
 export class CustomError extends Error {
   statusCode: number;
+
   constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
@@ -21,7 +22,7 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  err.message = err.message || "Something went wrong in our side";
+  err.message = err.message || "Something went wrong on our side";
   err.statusCode = err.statusCode || 500;
 
   const errorResponse: ErrorResponse = {
