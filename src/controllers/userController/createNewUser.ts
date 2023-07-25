@@ -5,24 +5,24 @@ import { CustomError } from '../../middlewares/globalErrorHandler';
 export const createNewUser = async (req: Request, res: Response) => {
   const { userName, userEmail, firstName, lastName } = req.body;
   try {
-    const user = await User.findOne({
+    const foundUser = await User.findOne({
       where: {
         userEmail,
       },
     });
-    if (user) {
-      console.log('user already exists>--------------------');
+
+    if (foundUser) {
       throw new CustomError('User already exists', 400);
     }
 
-    const user1 = await User.create({
+    const user = await User.create({
       userName,
       userEmail,
       firstName,
       lastName,
     });
 
-    res.json(user1);
+    res.json(user);
   } catch (error) {
     throw new CustomError(`unable to create user ${userEmail}`, 500);
   }
