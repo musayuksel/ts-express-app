@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 
 export class CustomError extends Error {
   statusCode: number;
@@ -24,10 +24,10 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-    const errorResponse: ErrorResponse = {
-    status: err.statusCode < 500 ? "fail" : "error",
+  const errorResponse: ErrorResponse = {
+    status: err?.statusCode < 500 ? 'fail' : 'error',
     message: err.message,
   };
 
-  res.status(err.statusCode).json(errorResponse);
+  res.status(err?.statusCode ?? 500).json(errorResponse);
 };
