@@ -2,11 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Channel } from '../../models/channel';
 import { CustomError } from '../../middlewares/globalErrorHandler';
 
-export const addUserToChannel = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const addUserToChannel = async (req: Request, res: Response, next: NextFunction) => {
   const { userId, channelId } = req.body;
 
   try {

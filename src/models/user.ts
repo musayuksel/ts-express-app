@@ -1,5 +1,5 @@
-import { Model, DataTypes, CreationOptional } from "sequelize";
-import { sequelize } from "./sequelize";
+import { Model, DataTypes, CreationOptional } from 'sequelize';
+import { sequelize } from './sequelize';
 
 class User extends Model {
   declare id: CreationOptional<number>;
@@ -34,7 +34,7 @@ User.init(
       type: DataTypes.STRING,
     },
   },
-  { sequelize }
+  { sequelize },
 );
 
 export { User };

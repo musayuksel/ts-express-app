@@ -7,16 +7,7 @@ import { userIdParamSchema, messageSchema } from '../schemas';
 const router = express.Router();
 
 router.get('/', messageController.getAllMessages);
-router.get(
-  '/:userId',
-  validateReqParamSchema(userIdParamSchema),
-  messageController.getUserMessages
-);
-router.post(
-  '/',
-  logBody,
-  validateReqBodySchema(messageSchema),
-  messageController.createMessage
-);
+router.get('/:userId', validateReqParamSchema(userIdParamSchema), messageController.getUserMessages);
+router.post('/', logBody, validateReqBodySchema(messageSchema), messageController.createMessage);
 
 export default router;

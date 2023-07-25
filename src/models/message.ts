@@ -6,15 +6,12 @@ import {
   InferCreationAttributes,
   CreationOptional,
   ForeignKey,
-} from "sequelize";
-import { sequelize } from "./sequelize";
-import { User } from "./user";
-import { Channel } from "./channel";
+} from 'sequelize';
+import { sequelize } from './sequelize';
+import { User } from './user';
+import { Channel } from './channel';
 
-class Message extends Model<
-  InferAttributes<Message>,
-  InferCreationAttributes<Message>
-> {
+class Message extends Model<InferAttributes<Message>, InferCreationAttributes<Message>> {
   declare addUser: HasManyAddAssociationMixin<User, number>;
   declare addChannel: HasManyAddAssociationMixin<Channel, number>;
   declare id: CreationOptional<number>;
@@ -45,7 +42,7 @@ Message.init(
       type: DataTypes.ARRAY(DataTypes.STRING),
     },
   },
-  { sequelize }
+  { sequelize },
 );
 
 // User.hasMany(Message, { foreignKey: "userId" });

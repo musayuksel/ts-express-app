@@ -8,9 +8,7 @@ const DB_USERNAME = process.env.DB_USERNAME;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 
 if (!DB_DB || !DB_HOST || !DB_USERNAME || !DB_PASSWORD) {
-  throw new Error(
-    'Missing required environment variables for database connection.'
-  );
+  throw new Error('Missing required environment variables for database connection.');
 }
 
 const sequelize = new Sequelize(DB_DB, DB_USERNAME, DB_PASSWORD, {
@@ -22,9 +20,7 @@ const sequelize = new Sequelize(DB_DB, DB_USERNAME, DB_PASSWORD, {
 const testDbConnection = async (sequelize: Sequelize) => {
   try {
     await sequelize.authenticate();
-    console.log(
-      `Connected to ${sequelize.getDatabaseName()} postgres database`
-    );
+    console.log(`Connected to ${sequelize.getDatabaseName()} postgres database`);
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }

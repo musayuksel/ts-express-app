@@ -6,11 +6,7 @@ import { channelSchema } from '../schemas';
 const router = Router();
 
 router.get('/', channelController.getAllChannels);
-router.post(
-  '/',
-  validateReqBodySchema(channelSchema),
-  channelController.createChannel
-);
+router.post('/', validateReqBodySchema(channelSchema), channelController.createChannel);
 router.post('/addUser', channelController.addUserToChannel);
 
 export default router;

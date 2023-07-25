@@ -5,7 +5,7 @@ import { addUserToChannel } from './addUserToChannel';
 const channelController = {
   getAllChannels,
   createChannel,
-  addUserToChannel
-}
+  addUserToChannel,
+};
 
-export default channelController; 
+export default channelController;
