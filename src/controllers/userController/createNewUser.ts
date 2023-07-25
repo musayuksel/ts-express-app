@@ -1,8 +1,12 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { User } from '../../models/user';
 import { CustomError } from '../../middlewares/globalErrorHandler';
 
-export const createNewUser = async (req: Request, res: Response) => {
+export const createNewUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { userName, userEmail, firstName, lastName } = req.body;
   try {
     const foundUser = await User.findOne({
@@ -24,6 +28,6 @@ export const createNewUser = async (req: Request, res: Response) => {
 
     res.json(user);
   } catch (error) {
-    throw new CustomError(`unable to create user ${userEmail}`, 500);
+    next(error);
   }
 };
