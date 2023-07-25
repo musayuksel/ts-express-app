@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
 export class CustomError extends Error {
   statusCode: number;
@@ -15,7 +15,7 @@ interface ErrorResponse {
   message: string;
 }
 
-export const globalErrorHandler = (err: CustomError, req: Request, res: Response, next: NextFunction) => {
+export const globalErrorHandler = (err: CustomError, req: Request, res: Response) => {
   const errorResponse: ErrorResponse = {
     status: err.statusCode < 500 ? 'fail' : 'error',
     message: err.message,
