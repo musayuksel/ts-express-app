@@ -25,9 +25,9 @@ export const globalErrorHandler = (
   next: NextFunction
 ) => {
   const errorResponse: ErrorResponse = {
-    status: err?.statusCode < 500 ? 'fail' : 'error',
+    status: err.statusCode < 500 ? 'fail' : 'error',
     message: err.message,
   };
 
-  res.status(err?.statusCode ?? 500).json(errorResponse);
+  res.status(err.statusCode ?? 500).json(errorResponse);
 };
