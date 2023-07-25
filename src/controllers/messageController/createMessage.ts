@@ -1,8 +1,12 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { Message } from '../../models/message';
 import { CustomError } from '../../middlewares/globalErrorHandler';
 
-export const createMessage = async (req: Request, res: Response) => {
+export const createMessage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { content, UserId, ChannelId, attachment } = req.body;
   try {
     const newMessage = await Message.create({
@@ -13,6 +17,6 @@ export const createMessage = async (req: Request, res: Response) => {
     });
     res.json(newMessage);
   } catch (error) {
-    throw new CustomError(`unable to create message ${content}`, 500);
+    next(error);
   }
 };

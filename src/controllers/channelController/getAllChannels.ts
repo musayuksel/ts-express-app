@@ -1,14 +1,15 @@
-import { Request, Response } from "express";
-import { Channel } from "../../models/channel";
-import { CustomError } from '../../middlewares/globalErrorHandler';
+import { Request, Response, NextFunction } from 'express';
+import { Channel } from '../../models/channel';
 
-export const getAllChannels = async (req: Request, res: Response) => {
+export const getAllChannels = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const channels = await Channel.findAll();
     res.json(channels);
-
   } catch (error) {
-    throw new CustomError("Something went wrong", 500);
+    next(error);
   }
 };
-

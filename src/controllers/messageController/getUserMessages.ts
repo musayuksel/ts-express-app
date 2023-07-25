@@ -1,8 +1,12 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { Message } from '../../models/message';
 import { CustomError } from '../../middlewares/globalErrorHandler';
 
-export const getUserMessages = async (req: Request, res: Response) => {
+export const getUserMessages = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { userId } = req.params;
   try {
     const messages = await Message.findAll({
@@ -12,6 +16,6 @@ export const getUserMessages = async (req: Request, res: Response) => {
     });
     res.json(messages);
   } catch (error) {
-    throw new CustomError('User not found', 404);
+    next(error);
   }
 };
