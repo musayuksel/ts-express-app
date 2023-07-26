@@ -10,6 +10,7 @@ export const createMessage = async (req: Request, res: Response, next: NextFunct
       ChannelId,
       attachment: attachment || null,
     });
+
     res.json(newMessage);
   } catch (error) {
     next(error);

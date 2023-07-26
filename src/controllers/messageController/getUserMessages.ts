@@ -9,6 +9,7 @@ export const getUserMessages = async (req: Request, res: Response, next: NextFun
         UserId: userId,
       },
     });
+
     res.json(messages);
   } catch (error) {
     next(error);

@@ -7,6 +7,7 @@ export const addUserToChannel = async (req: Request, res: Response, next: NextFu
 
   try {
     const channel = await Channel.findByPk(channelId);
+
     if (!channel) {
       throw new CustomError(`Channel with id ${channelId} not found`, 404);
     }
