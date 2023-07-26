@@ -24,7 +24,7 @@ const testDbConnection = async (sequelize: Sequelize) => {
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
-  await sequelize.sync({ force: true }); //TODO: remove { force true } in production
+  await sequelize.sync();
   return sequelize;
 };
 
