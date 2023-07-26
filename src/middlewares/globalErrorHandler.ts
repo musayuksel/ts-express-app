@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 export class CustomError extends Error {
   statusCode: number;
@@ -15,7 +15,8 @@ interface ErrorResponse {
   message: string;
 }
 
-export const globalErrorHandler = (err: CustomError, req: Request, res: Response) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const globalErrorHandler = (err: CustomError, req: Request, res: Response, next: NextFunction) => {
   const errorResponse: ErrorResponse = {
     status: err.statusCode < 500 ? 'fail' : 'error',
     message: err.message,
