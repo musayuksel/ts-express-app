@@ -1,5 +1,5 @@
-import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
+import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
 dotenv.config();
 
 const DB_DB = process.env.DB_DB;
@@ -14,18 +14,17 @@ if (!DB_DB || !DB_HOST || !DB_USERNAME || !DB_PASSWORD) {
 const sequelize = new Sequelize(DB_DB, DB_USERNAME, DB_PASSWORD, {
   host: DB_HOST,
   dialect: 'postgres',
+  logging: false,
 });
 
 const testDbConnection = async (sequelize: Sequelize) => {
   try {
     await sequelize.authenticate();
-    console.log(
-      `Connected to ${sequelize.getDatabaseName()} postgres database`
-    );
+    console.log(`Connected to ${sequelize.getDatabaseName()} postgres database`);
   } catch (error) {
-    console.error("Unable to connect to the database:", error);
+    console.error('Unable to connect to the database:', error);
   }
-  await sequelize.sync({ force: true });
+  await sequelize.sync();
   return sequelize;
 };
 

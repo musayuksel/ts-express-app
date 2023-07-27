@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
 export const checkStatus = (req: Request, res: Response) => {
   res.json({
-    status: "ok",
+    status: 'ok',
     url: req.baseUrl,
-    message: "Server is running",
+    message: 'Server is running',
   });
 };

@@ -5,14 +5,11 @@ import {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
-} from "sequelize";
-import { sequelize } from "./sequelize";
-import { User } from "./user";
+} from 'sequelize';
+import { sequelize } from './sequelize';
+import { User } from './user';
 
-class Channel extends Model<
-  InferAttributes<Channel>,
-  InferCreationAttributes<Channel>
-> {
+class Channel extends Model<InferAttributes<Channel>, InferCreationAttributes<Channel>> {
   declare addUser: HasManyAddAssociationMixin<User, number>;
   declare id: CreationOptional<number>;
   declare channelName: string;
@@ -30,9 +27,9 @@ Channel.init(
       unique: true,
     },
   },
-  { sequelize }
+  { sequelize },
 );
 
-Channel.belongsToMany(User, { through: "UserChannel" });
-User.belongsToMany(Channel, { through: "UserChannel" });
+Channel.belongsToMany(User, { through: 'UserChannel' });
+User.belongsToMany(Channel, { through: 'UserChannel' });
 export { Channel };
