@@ -9,5 +9,6 @@ const router = express.Router();
 router.get('/', messageController.getAllMessages);
 router.get('/:userId', validateReqParamSchema(userIdParamSchema), messageController.getUserMessages);
 router.post('/', logBody, validateReqBodySchema(messageSchema), messageController.createMessage);
+router.post('/upload', messageController.uploadFile);
 
 export default router;
