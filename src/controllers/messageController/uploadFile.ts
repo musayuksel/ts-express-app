@@ -1,9 +1,36 @@
 import { Request, Response, NextFunction } from 'express';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 export const uploadFile = async (req: Request, res: Response, next: NextFunction) => {
+  const s3 = new S3Client({
+    region: process.env.AWS_REGION,
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+    },
+  });
+
   try {
-    console.log(req.file);
-    res.json({ file: req.file?.originalname, mimetype: req.file?.mimetype });
+    const file = req.file;
+    const fileName = file?.originalname.replace(/ /g, '_');
+    const fileContent = file?.buffer;
+
+    const params = {
+      Bucket: process.env.S3_BUCKET_NAME,
+      Key: fileName,
+      Body: fileContent,
+      contentType: file?.mimetype,
+    };
+
+    console.log({ params });
+    const command = new PutObjectCommand(params);
+    const data = await s3.send(command);
+
+    res.json({
+      message: 'Image uploaded successfully',
+      data,
+      fileName: `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`,
+    });
   } catch (error) {
     next(error);
   }
