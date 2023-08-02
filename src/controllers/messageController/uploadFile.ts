@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { v4 as uuidv4 } from 'uuid';
 
 export const uploadFile = async (req: Request, res: Response, next: NextFunction) => {
   const s3 = new S3Client({
@@ -12,7 +13,7 @@ export const uploadFile = async (req: Request, res: Response, next: NextFunction
 
   try {
     const file = req.file;
-    const fileName = file?.originalname.replace(/ /g, '_');
+    const fileName = `${uuidv4()}-${file?.originalname.replace(/ /g, '_')}`;
     const fileContent = file?.buffer;
 
     const params = {
