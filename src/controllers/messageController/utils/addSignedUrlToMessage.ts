@@ -3,8 +3,8 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Message } from '../../../models/message';
 import { s3 } from './configureAWS';
 
-export const addSignedUrlToMessage = async (currentMessage: Message | undefined): Promise<string> => {
-  const messageKey = currentMessage?.dataValues.attachment || undefined;
+export const addSignedUrlToMessage = async (currentMessage: Message) => {
+  const messageKey = currentMessage?.attachment || undefined;
 
   const getObjectParams = {
     Bucket: process.env.S3_BUCKET_NAME,

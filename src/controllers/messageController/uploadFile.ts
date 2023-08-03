@@ -5,16 +5,16 @@ import { s3 } from './utils/configureAWS';
 
 export const uploadFile = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const file = req.file;
+    const { originalname, buffer, mimetype } = req.file || {};
     // replace spaces with underscore '_' and add unique prefix
-    const fileName = `${uuidv4()}-${file?.originalname.replace(/ /g, '_')}`;
-    const fileContent = file?.buffer;
+    const fileName = `${uuidv4()}-${originalname?.replace(/ /g, '_')}`;
+    const fileContent = buffer;
 
     const params = {
       Bucket: process.env.S3_BUCKET_NAME,
       Key: fileName,
       Body: fileContent,
-      contentType: file?.mimetype,
+      contentType: mimetype,
     };
 
     const command = new PutObjectCommand(params);
