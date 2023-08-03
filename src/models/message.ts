@@ -39,7 +39,7 @@ Message.init(
       defaultValue: DataTypes.NOW,
     },
     attachment: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
+      type: DataTypes.STRING,
     },
   },
   { sequelize },
