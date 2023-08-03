@@ -13,6 +13,7 @@ export const uploadFile = async (req: Request, res: Response, next: NextFunction
 
   try {
     const file = req.file;
+    // replace spaces with underscore '_' and add unique prefix
     const fileName = `${uuidv4()}-${file?.originalname.replace(/ /g, '_')}`;
     const fileContent = file?.buffer;
 
@@ -23,14 +24,13 @@ export const uploadFile = async (req: Request, res: Response, next: NextFunction
       contentType: file?.mimetype,
     };
 
-    console.log({ params });
     const command = new PutObjectCommand(params);
     const data = await s3.send(command);
 
     res.json({
       message: 'Image uploaded successfully',
       data,
-      fileName: `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`,
+      fileName: fileName,
     });
   } catch (error) {
     next(error);
