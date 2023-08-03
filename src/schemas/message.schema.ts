@@ -19,6 +19,12 @@ export const messageIdParamSchema = Joi.object({
   }),
 });
 
+export const channelIdParamSchema = Joi.object({
+  channelId: Joi.string().pattern(new RegExp('^[0-9]+$')).required().messages({
+    'string.pattern.base': 'channelId must be a number',
+  }),
+});
+
 export const updateMessageSchema = Joi.object({
   id: Joi.number().required(),
   content: Joi.string().required(),
