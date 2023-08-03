@@ -3,6 +3,7 @@ import { createMessage } from './createMessage';
 import { getUserMessages } from './getUserMessages';
 import { uploadFile } from './uploadFile';
 import { deleteMessage } from './deleteMessage';
+import { updateMessage } from './updateMessage';
 
 const messageController = {
   getAllMessages,
@@ -10,6 +11,7 @@ const messageController = {
   createMessage,
   uploadFile,
   deleteMessage,
+  updateMessage,
 };
 
 export default messageController;

@@ -18,3 +18,9 @@ export const messageIdParamSchema = Joi.object({
     'string.pattern.base': 'messageId must be a number',
   }),
 });
+
+export const updateMessageSchema = Joi.object({
+  id: Joi.number().required(),
+  content: Joi.string().required(),
+  attachment: Joi.string().allow(null),
+});
