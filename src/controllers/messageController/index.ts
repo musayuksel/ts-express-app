@@ -4,6 +4,7 @@ import { getUserMessages } from './getUserMessages';
 import { uploadFile } from './uploadFile';
 import { deleteMessage } from './deleteMessage';
 import { updateMessage } from './updateMessage';
+import { getChannelMessages } from './getChannelMessages';
 
 const messageController = {
   getAllMessages,
@@ -12,6 +13,7 @@ const messageController = {
   uploadFile,
   deleteMessage,
   updateMessage,
+  getChannelMessages,
 };
 
 export default messageController;
