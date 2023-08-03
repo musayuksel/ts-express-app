@@ -7,11 +7,10 @@ export const getAllMessages = async (req: Request, res: Response, next: NextFunc
     const messages = await Message.findAll();
 
     const messagesWithSignedUrlPromises = messages.map(async (currentMessage) => {
-      const url = currentMessage.dataValues.attachment && (await addSignedUrlToMessage(currentMessage));
-      return {
-        ...currentMessage.dataValues,
-        attachment: url,
-      };
+      if (currentMessage.attachment) {
+        currentMessage.attachment = await addSignedUrlToMessage(currentMessage);
+      }
+      return currentMessage;
     });
 
     const messagesWithSignedUrl = await Promise.all(messagesWithSignedUrlPromises);
