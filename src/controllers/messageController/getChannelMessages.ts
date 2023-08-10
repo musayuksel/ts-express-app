@@ -2,9 +2,14 @@ import { Request, Response, NextFunction } from 'express';
 import { Message } from '../../models/message';
 import { addSignedUrlToMessage } from './utils/addSignedUrlToMessage';
 
-export const getAllMessages = async (req: Request, res: Response, next: NextFunction) => {
+export const getChannelMessages = async (req: Request, res: Response, next: NextFunction) => {
+  const { channelId } = req.params;
   try {
-    const messages = await Message.findAll();
+    const messages = await Message.findAll({
+      where: {
+        ChannelId: channelId,
+      },
+    });
 
     const messagesWithSignedUrlPromises = messages.map(async (currentMessage) => {
       if (currentMessage.attachment) {
