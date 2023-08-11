@@ -6,6 +6,7 @@ import usersRoutes from './routes/usersRoutes';
 import channelRoutes from './routes/channelsRoutes';
 import { CustomError, globalErrorHandler } from './middlewares/globalErrorHandler';
 import { sequelize, testDbConnection } from './models/sequelize';
+import { authenticateRequest } from './middlewares/authenticateRequest';
 
 dotenv.config();
 const PORT = parseInt(process.env.PORT || '3000');
@@ -14,7 +15,7 @@ const app = express();
 app.use(express.json());
 
 app.use('/api/health-check', healthCheckRoutes);
-app.use('/api/messages', messagesRoutes);
+app.use('/api/messages', authenticateRequest, messagesRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/channels', channelRoutes);
 
