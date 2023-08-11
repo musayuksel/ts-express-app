@@ -27,6 +27,7 @@ export const authenticateRequest = async (req: Request, res: Response, next: Nex
   try {
     const decodedToken = await verifier.verify(accessToken);
     req.currentUser = decodedToken;
+    console.info({ currentUser: req.currentUser });
     next();
   } catch (error) {
     const customError = new CustomError('Invalid access token', 401);
