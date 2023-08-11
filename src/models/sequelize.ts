@@ -20,7 +20,7 @@ const sequelize = new Sequelize(DB_DB, DB_USERNAME, DB_PASSWORD, {
 const testDbConnection = async (sequelize: Sequelize) => {
   try {
     await sequelize.authenticate();
-    console.log(`Connected to ${sequelize.getDatabaseName()} postgres database`);
+    console.info(`Connected to ${sequelize.getDatabaseName()} postgres database`);
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
