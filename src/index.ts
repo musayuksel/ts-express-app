@@ -19,7 +19,7 @@ app.use(cors());
 app.use('/api/health-check', healthCheckRoutes);
 app.use('/api/messages', authenticateRequest, messagesRoutes);
 app.use('/api/users', usersRoutes);
-app.use('/api/channels', channelRoutes);
+app.use('/api/channels', authenticateRequest, channelRoutes);
 
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
   const error = new CustomError(`Route ${req.originalUrl} not found!!!`, 404);
