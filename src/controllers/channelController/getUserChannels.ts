@@ -7,7 +7,7 @@ export const getUserChannels = async (req: Request, res: Response, next: NextFun
   const username = req.currentUser?.username;
 
   try {
-    const userWithChannels = await User.findOne({
+    const userChannels = await User.findOne({
       where: { userName: username },
       include: {
         model: Channel,
@@ -17,11 +17,11 @@ export const getUserChannels = async (req: Request, res: Response, next: NextFun
       },
     });
 
-    if (!userWithChannels) {
+    if (!userChannels) {
       throw new CustomError('User not found', 404);
     }
 
-    res.json(userWithChannels?.dataValues.Channels);
+    res.json(userChannels?.dataValues.Channels);
   } catch (error) {
     next(error);
   }
