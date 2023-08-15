@@ -7,7 +7,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 export const generateS3SignInUrl = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // replace spaces with underscore '_' and add unique prefix
-    const storageFileName = `${uuidv4()}-${req.body.fileName?.replace(/ /g, '_')}`;
+    const storageFileName = `${uuidv4()}-${req.body.fileName.replace(/ /g, '_')}`;
 
     const params = {
       Bucket: process.env.S3_BUCKET_NAME,
