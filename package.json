@@ -33,7 +33,6 @@
     "@typescript-eslint/parser": "^6.2.0",
     "dotenv": "^16.3.1",
     "eslint": "^8.45.0",
-    "multer": "^1.4.5-lts.1",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.0",
     "ts-node": "^10.9.1",
