@@ -30,3 +30,7 @@ export const updateMessageSchema = Joi.object({
   content: Joi.string().required(),
   attachment: Joi.string().allow(null),
 });
+
+export const fileNameSchema = Joi.object({
+  fileName: Joi.string().required(),
+});

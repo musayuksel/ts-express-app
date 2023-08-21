@@ -6,17 +6,20 @@ import usersRoutes from './routes/usersRoutes';
 import channelRoutes from './routes/channelsRoutes';
 import { CustomError, globalErrorHandler } from './middlewares/globalErrorHandler';
 import { sequelize, testDbConnection } from './models/sequelize';
+import { authenticateRequest } from './middlewares/authenticateRequest';
+import cors from 'cors';
 
 dotenv.config();
 const PORT = parseInt(process.env.PORT || '3000');
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.use('/api/health-check', healthCheckRoutes);
-app.use('/api/messages', messagesRoutes);
+app.use('/api/messages', authenticateRequest, messagesRoutes);
 app.use('/api/users', usersRoutes);
-app.use('/api/channels', channelRoutes);
+app.use('/api/channels', authenticateRequest, channelRoutes);
 
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
   const error = new CustomError(`Route ${req.originalUrl} not found!!!`, 404);
@@ -33,7 +36,7 @@ async function startServer() {
   }
 
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.info(`Server is running on port ${PORT}`);
   });
 }
 

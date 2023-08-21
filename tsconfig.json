@@ -7,8 +7,9 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts", "custom.d.ts"],
+  "files": ["src/types/requestCurrentUser.d.ts"],
+  "include": ["src/**/*.ts", "custom.d.ts", "src/types/**/*.d.ts"],
   "exclude": ["node_modules"]
 }
