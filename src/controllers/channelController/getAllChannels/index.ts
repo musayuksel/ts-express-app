@@ -1,0 +1,1 @@
+export { getAllChannels } from './getAllChannels';
