@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Channels {
+  id          Int           @id @default(autoincrement())
+  channelName String        @unique @db.VarChar(255)
+  createdAt   DateTime      @db.Timestamptz(6)
+  updatedAt   DateTime      @db.Timestamptz(6)
+  Messages    Messages[]
+  UserChannel UserChannel[]
+}
+
+model Messages {
+  id         Int       @id @default(autoincrement())
+  content    String
+  timeStamp  DateTime  @db.Timestamptz(6)
+  attachment String?   @db.VarChar(255)
+  createdAt  DateTime  @db.Timestamptz(6)
+  updatedAt  DateTime  @db.Timestamptz(6)
+  UserId     Int
+  ChannelId  Int
+  Channels   Channels @relation(fields: [ChannelId], references: [id])
+  Users      Users    @relation(fields: [UserId], references: [id])
+}
+
+model UserChannel {
+  createdAt DateTime @db.Timestamptz(6)
+  updatedAt DateTime @db.Timestamptz(6)
+  ChannelId Int
+  UserId    Int
+  Channels  Channels @relation(fields: [ChannelId], references: [id], onDelete: Cascade)
+  Users     Users    @relation(fields: [UserId], references: [id], onDelete: Cascade)
+
+  @@id([ChannelId, UserId])
+}
+
+model Users {
+  id          Int           @id @default(autoincrement())
+  userName    String        @unique @db.VarChar(255)
+  userEmail   String        @unique @db.VarChar(255)
+  firstName   String        @db.VarChar(255)
+  lastName    String?       @db.VarChar(255)
+  createdAt   DateTime      @db.Timestamptz(6)
+  updatedAt   DateTime      @db.Timestamptz(6)
+  Messages    Messages[]
+  UserChannel UserChannel[]
+}
