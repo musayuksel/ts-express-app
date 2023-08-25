@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../../models/user';
+import { prismaClient } from '../../lib/prisma/prisma';
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const users = await User.findAll();
+    const allUsers = await prismaClient.users.findMany();
 
-    res.json(users);
+    res.json(allUsers);
   } catch (error) {
     next(error);
+  } finally {
+    await prismaClient.$disconnect();
   }
 };

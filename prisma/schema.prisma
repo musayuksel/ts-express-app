@@ -10,19 +10,19 @@ datasource db {
 model Channels {
   id          Int           @id @default(autoincrement())
   channelName String        @unique @db.VarChar(255)
-  createdAt   DateTime      @db.Timestamptz(6)
-  updatedAt   DateTime      @db.Timestamptz(6)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   Messages    Messages[]
   UserChannel UserChannel[]
 }
 
 model Messages {
-  id         Int       @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   content    String
-  timeStamp  DateTime  @db.Timestamptz(6)
-  attachment String?   @db.VarChar(255)
-  createdAt  DateTime  @db.Timestamptz(6)
-  updatedAt  DateTime  @db.Timestamptz(6)
+  timeStamp  DateTime @db.Timestamptz(6)
+  attachment String?  @db.VarChar(255)
+  createdAt  DateTime @db.Timestamptz(6)
+  updatedAt  DateTime @db.Timestamptz(6)
   UserId     Int
   ChannelId  Int
   Channels   Channels @relation(fields: [ChannelId], references: [id])
@@ -30,8 +30,8 @@ model Messages {
 }
 
 model UserChannel {
-  createdAt DateTime @db.Timestamptz(6)
-  updatedAt DateTime @db.Timestamptz(6)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   ChannelId Int
   UserId    Int
   Channels  Channels @relation(fields: [ChannelId], references: [id], onDelete: Cascade)
@@ -46,8 +46,8 @@ model Users {
   userEmail   String        @unique @db.VarChar(255)
   firstName   String        @db.VarChar(255)
   lastName    String?       @db.VarChar(255)
-  createdAt   DateTime      @db.Timestamptz(6)
-  updatedAt   DateTime      @db.Timestamptz(6)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   Messages    Messages[]
   UserChannel UserChannel[]
 }

@@ -1,13 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
-import { Channel } from '../../models/channel';
 
-export const createChannel = async (req: Request, res: Response, next: NextFunction) => {
-  const { channelName } = req.body;
+import { createChannelOperation, CreateChannelOperationTypes } from './operations';
 
+interface CreateChannelRequest<T> extends Request {
+  body: T;
+}
+
+export const createChannel = async (
+  req: CreateChannelRequest<CreateChannelOperationTypes>,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const channel = await Channel.create({
-      channelName,
-    });
+    const payload = {
+      channelName: req.body.channelName,
+    };
+
+    const channel = await createChannelOperation(payload);
 
     res.json(channel);
   } catch (error) {
