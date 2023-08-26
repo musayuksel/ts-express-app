@@ -8,12 +8,12 @@ datasource db {
 }
 
 model Channels {
-  id          Int           @id @default(autoincrement())
-  channelName String        @unique @db.VarChar(255)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  Messages    Messages[]
-  UserChannel UserChannel[]
+  id          Int        @id @default(autoincrement())
+  channelName String     @unique @db.VarChar(255)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  messages    Messages[]
+  users       Users[]
 }
 
 model Messages {
@@ -23,31 +23,20 @@ model Messages {
   attachment String?  @db.VarChar(255)
   createdAt  DateTime @db.Timestamptz(6)
   updatedAt  DateTime @db.Timestamptz(6)
-  UserId     Int
-  ChannelId  Int
-  Channels   Channels @relation(fields: [ChannelId], references: [id])
-  Users      Users    @relation(fields: [UserId], references: [id])
-}
-
-model UserChannel {
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ChannelId Int
-  UserId    Int
-  Channels  Channels @relation(fields: [ChannelId], references: [id], onDelete: Cascade)
-  Users     Users    @relation(fields: [UserId], references: [id], onDelete: Cascade)
-
-  @@id([ChannelId, UserId])
+  channel    Channels @relation(fields: [channelId], references: [id])
+  channelId  Int
+  user       Users    @relation(fields: [userId], references: [id])
+  userId     Int
 }
 
 model Users {
-  id          Int           @id @default(autoincrement())
-  userName    String        @unique @db.VarChar(255)
-  userEmail   String        @unique @db.VarChar(255)
-  firstName   String        @db.VarChar(255)
-  lastName    String?       @db.VarChar(255)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  Messages    Messages[]
-  UserChannel UserChannel[]
+  id        Int        @id @default(autoincrement())
+  userName  String     @unique @db.VarChar(255)
+  userEmail String     @unique @db.VarChar(255)
+  firstName String     @db.VarChar(255)
+  lastName  String?    @db.VarChar(255)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  messages  Messages[]
+  channels  Channels[]
 }
