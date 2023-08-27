@@ -1,4 +1,3 @@
-import { getAllMessages } from './getAllMessages';
 import { createMessage } from './createMessage';
 import { getUserMessages } from './getUserMessages';
 import { deleteMessage } from './deleteMessage';
@@ -7,7 +6,6 @@ import { getChannelMessages } from './getChannelMessages';
 import { generateS3SignInUrl } from './generateS3SignInUrl';
 
 const messageController = {
-  getAllMessages,
   getUserMessages,
   createMessage,
   deleteMessage,
