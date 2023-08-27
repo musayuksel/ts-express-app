@@ -1,14 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { prismaClient } from '../../lib/prisma/prisma';
+import { getAllUsersOperation } from './operations';
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const allUsers = await prismaClient.users.findMany();
+    const allUsers = await getAllUsersOperation();
 
     res.json(allUsers);
   } catch (error) {
     next(error);
-  } finally {
-    await prismaClient.$disconnect();
   }
 };
