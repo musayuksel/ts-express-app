@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { prismaClient } from '../../lib/prisma/prisma';
+import { getAllChannelsOperation } from './operations';
 
 export const getAllChannels = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const channels = await prismaClient.channels.findMany();
+    const channels = await getAllChannelsOperation();
     res.json(channels);
   } catch (error) {
     next(error);
