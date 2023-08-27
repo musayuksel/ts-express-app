@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Channels {
-  id          Int        @id @default(autoincrement())
+  id          String     @id @default(uuid())
   channelName String     @unique @db.VarChar(255)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -17,20 +17,19 @@ model Channels {
 }
 
 model Messages {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(uuid())
   content    String
-  timeStamp  DateTime @db.Timestamptz(6)
   attachment String?  @db.VarChar(255)
-  createdAt  DateTime @db.Timestamptz(6)
-  updatedAt  DateTime @db.Timestamptz(6)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   channel    Channels @relation(fields: [channelId], references: [id])
-  channelId  Int
+  channelId  String
   user       Users    @relation(fields: [userId], references: [id])
-  userId     Int
+  userId     String
 }
 
 model Users {
-  id        Int        @id @default(autoincrement())
+  id        String     @id @default(uuid())
   userName  String     @unique @db.VarChar(255)
   userEmail String     @unique @db.VarChar(255)
   firstName String     @db.VarChar(255)
