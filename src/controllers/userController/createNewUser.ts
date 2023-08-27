@@ -1,26 +1,25 @@
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../../models/user';
-import { CustomError } from '../../middlewares/globalErrorHandler';
+import { CreateNewUserOperationTypes, createNewUserOperation } from './operations/createNewUserOperation';
 
-export const createNewUser = async (req: Request, res: Response, next: NextFunction) => {
+interface CreateNewUserRequest<T> extends Request {
+  body: T;
+}
+
+export const createNewUser = async (
+  req: CreateNewUserRequest<CreateNewUserOperationTypes>,
+  res: Response,
+  next: NextFunction,
+) => {
   const { userName, userEmail, firstName, lastName } = req.body;
   try {
-    const user = await User.findOne({
-      where: {
-        userEmail,
-      },
-    });
-
-    if (user) {
-      throw new CustomError('User already exists', 400);
-    }
-
-    const newUser = await User.create({
+    const payload = {
       userName,
       userEmail,
       firstName,
       lastName,
-    });
+    };
+
+    const newUser = await createNewUserOperation(payload);
 
     res.json(newUser);
   } catch (error) {
