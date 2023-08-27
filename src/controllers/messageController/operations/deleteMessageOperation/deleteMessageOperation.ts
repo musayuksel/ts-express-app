@@ -1,5 +1,5 @@
 import { DeleteObjectCommand } from '@aws-sdk/client-s3';
-import { prismaClient } from '../../../../lib/prisma';
+import { prismaClient } from '../../../../lib';
 import { CustomError } from '../../../../middlewares/globalErrorHandler';
 import { DeleteMessageOperationTypes } from './deleteMessageOperation.types';
 import { s3 } from '../../utils/configureAWS';

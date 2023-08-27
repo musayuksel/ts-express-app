@@ -1,4 +1,4 @@
-import { prismaClient } from '../../../../lib/prisma';
+import { prismaClient } from '../../../../lib';
 import { addSignedUrlToMessage } from '../../utils';
 
 import { GetChannelMessagesOperationTypes } from './getChannelMessagesOperation.types';

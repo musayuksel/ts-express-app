@@ -1,4 +1,4 @@
-import { prismaClient } from '../../../../lib/prisma';
+import { prismaClient } from '../../../../lib';
 import { CustomError } from '../../../../middlewares/globalErrorHandler';
 import { CreateMessageOperationTypes } from './createMessageOperation.types';
 

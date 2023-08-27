@@ -1,4 +1,4 @@
-import { prismaClient } from '../../../../lib/prisma';
+import { prismaClient } from '../../../../lib';
 import { UpdateMessageOperationTypes } from './updateMessageOperation.types';
 
 export const updateMessageOperation = async (messagePayload: UpdateMessageOperationTypes) => {
