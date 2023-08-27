@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { UpdateUserOperationTypes, updateUserOperation } from './operations';
+import { formatResponse } from '../../utils';
 
 interface UpdateUserRequest<T> extends Request {
   body: T;
@@ -11,16 +12,18 @@ export const updateUser = async (
   next: NextFunction,
 ) => {
   const { id, userName, firstName, lastName } = req.body;
-  try {
-    const userPayload = {
-      id: id,
-      userName: userName,
-      firstName: firstName,
-      lastName: lastName,
-    };
 
+  const userPayload = {
+    id: id,
+    userName: userName,
+    firstName: firstName,
+    lastName: lastName,
+  };
+
+  try {
     const updatedUser = await updateUserOperation(userPayload);
-    res.json({ updatedUser });
+
+    res.json(formatResponse({ success: true, data: updatedUser }));
   } catch (error) {
     next(error);
   }

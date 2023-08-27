@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { CreateNewUserOperationTypes, createNewUserOperation } from './operations';
+import { formatResponse } from '../../utils';
 
 interface CreateNewUserRequest<T> extends Request {
   body: T;
@@ -11,17 +12,18 @@ export const createNewUser = async (
   next: NextFunction,
 ) => {
   const { userName, userEmail, firstName, lastName } = req.body;
-  try {
-    const payload = {
-      userName,
-      userEmail,
-      firstName,
-      lastName,
-    };
 
+  const payload = {
+    userName,
+    userEmail,
+    firstName,
+    lastName,
+  };
+
+  try {
     const newUser = await createNewUserOperation(payload);
 
-    res.json(newUser);
+    res.json(formatResponse({ success: true, data: newUser }));
   } catch (error) {
     next(error);
   }

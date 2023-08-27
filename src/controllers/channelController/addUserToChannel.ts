@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AddUserToChannelOperationTypes, addUserToChannelOperation } from './operations';
+import { formatResponse } from '../../utils';
 
 interface AddUserToChannelRequest<T> extends Request {
   body: T;
@@ -15,7 +16,7 @@ export const addUserToChannel = async (
   try {
     const channel = await addUserToChannelOperation({ userId, channelId });
 
-    res.json(channel);
+    res.json(formatResponse({ success: true, data: channel }));
   } catch (error) {
     next(error);
   }

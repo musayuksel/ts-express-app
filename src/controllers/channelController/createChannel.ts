@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { createChannelOperation, CreateChannelOperationTypes } from './operations';
+import { formatResponse } from '../../utils';
 
 interface CreateChannelRequest<T> extends Request {
   body: T;
@@ -11,14 +12,14 @@ export const createChannel = async (
   res: Response,
   next: NextFunction,
 ) => {
+  const channelPayload = {
+    channelName: req.body.channelName,
+  };
+
   try {
-    const payload = {
-      channelName: req.body.channelName,
-    };
+    const channel = await createChannelOperation(channelPayload);
 
-    const channel = await createChannelOperation(payload);
-
-    res.json(channel);
+    res.json(formatResponse({ success: true, data: channel }));
   } catch (error) {
     next(error);
   }

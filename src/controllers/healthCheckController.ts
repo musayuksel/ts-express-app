@@ -1,9 +1,6 @@
 import { Request, Response } from 'express';
+import { formatResponse } from '../utils';
 
 export const checkStatus = (req: Request, res: Response) => {
-  res.json({
-    status: 'ok',
-    url: req.baseUrl,
-    message: 'Server is running',
-  });
+  res.json(formatResponse({ success: true, data: req.baseUrl, message: 'Server is running ok!' }));
 };
