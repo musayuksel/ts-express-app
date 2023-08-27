@@ -13,6 +13,6 @@ export const updateMessageOperation = async (messagePayload: UpdateMessageOperat
       attachment,
     },
   });
-  //  TODO: add PRISMA error handling
+
   return message;
 };
