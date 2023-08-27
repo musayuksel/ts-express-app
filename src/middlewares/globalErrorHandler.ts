@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import { formatResponse } from '../utils';
+import { Prisma } from '@prisma/client';
 
 export class CustomError extends Error {
   statusCode: number;
@@ -9,18 +11,12 @@ export class CustomError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 }
-
-interface ErrorResponse {
-  status: string;
-  message: string;
-}
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const globalErrorHandler = (err: CustomError, req: Request, res: Response, next: NextFunction) => {
-  const errorResponse: ErrorResponse = {
-    status: err.statusCode < 500 ? 'fail' : 'error',
-    message: err.message,
-  };
+  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    err.message = `Prisma error - ${err.code} : ${err.message}`;
+    err.statusCode = 500;
+  }
 
-  res.status(err.statusCode ?? 500).json(errorResponse);
+  res.status(err.statusCode).json(formatResponse({ success: false, message: err.message }));
 };
