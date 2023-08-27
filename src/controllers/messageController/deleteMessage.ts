@@ -1,34 +1,24 @@
 import { Request, Response, NextFunction } from 'express';
-import { Message } from '../../models/message';
-import { CustomError } from '../../middlewares/globalErrorHandler';
-import { DeleteObjectCommand } from '@aws-sdk/client-s3';
-import { s3 } from './utils/configureAWS';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { DeleteMessageOperationTypes, deleteMessageOperation } from './operations';
 
-export const deleteMessage = async (req: Request, res: Response, next: NextFunction) => {
-  const { messageId } = req.params;
+interface DeleteMessageRequest<T extends ParamsDictionary> extends Request {
+  params: T;
+}
+
+export const deleteMessage = async (
+  req: DeleteMessageRequest<DeleteMessageOperationTypes>,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const message = await Message.findByPk(messageId);
-    if (message === null) {
-      throw new CustomError(`Message with id ${messageId} not found`, 404);
-    }
-    const messageKey = message.attachment;
-    if (messageKey) {
-      // if there is an attachment delete it from s3
-      const params = {
-        Bucket: process.env.S3_BUCKET_NAME,
-        Key: messageKey,
-      };
-      const command = new DeleteObjectCommand(params);
-      await s3.send(command);
-    }
+    const messageIdPayload = {
+      messageId: req.params.messageId,
+    };
 
-    Message.destroy({
-      where: {
-        id: messageId,
-      },
-    });
+    const deletedMessage = await deleteMessageOperation(messageIdPayload);
 
-    res.json({ 'deletedMessage:': message });
+    res.json({ deletedMessage });
   } catch (error) {
     next(error);
   }
