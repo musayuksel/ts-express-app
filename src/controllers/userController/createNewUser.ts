@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { CreateNewUserOperationTypes, createNewUserOperation } from './operations/createNewUserOperation';
+import { CreateNewUserOperationTypes, createNewUserOperation } from './operations';
 
 interface CreateNewUserRequest<T> extends Request {
   body: T;
