@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Message } from '../../models/message';
-import { addSignedUrlToMessage } from './utils/addSignedUrlToMessage';
+import { addSignedUrlToMessage } from './utils/addSignedUrlToMessage/addSignedUrlToMessage';
 
 export const getAllMessages = async (req: Request, res: Response, next: NextFunction) => {
   try {
