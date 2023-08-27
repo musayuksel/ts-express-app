@@ -1,28 +1,26 @@
 import { Request, Response, NextFunction } from 'express';
-import { Message } from '../../models/message';
-import { CustomError } from '../../middlewares/globalErrorHandler';
+import { UpdateMessageOperationTypes, updateMessageOperation } from './operations';
 
-export const updateMessage = async (req: Request, res: Response, next: NextFunction) => {
+interface UpdateMessageRequest<T> extends Request {
+  body: T;
+}
+
+export const updateMessage = async (
+  req: UpdateMessageRequest<UpdateMessageOperationTypes>,
+  res: Response,
+  next: NextFunction,
+) => {
   const { id, content, attachment } = req.body;
+
   try {
-    const message = await Message.findByPk(id);
-    if (message === null) {
-      throw new CustomError(`Message with id ${id} not found`, 404);
-    }
+    const messagePayload = {
+      id,
+      content,
+      attachment,
+    };
 
-    await Message.update(
-      {
-        content,
-        attachment,
-      },
-      {
-        where: {
-          id: id,
-        },
-      },
-    );
+    const updatedMessage = await updateMessageOperation(messagePayload);
 
-    const updatedMessage = await Message.findByPk(id);
     res.json({ 'updatedMessage:': updatedMessage });
   } catch (error) {
     next(error);
