@@ -4,7 +4,7 @@ import { createChannelOperation } from './createChannelOperation';
 describe('create operation', () => {
   it('should create the channel', async () => {
     prismaMock.channels.create.mockResolvedValue({
-      id: 1,
+      id: 'uuid_random_string',
       channelName: 'testChannelName',
       createdAt: new Date(),
       updatedAt: new Date(),

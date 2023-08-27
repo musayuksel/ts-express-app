@@ -1,4 +1,4 @@
 export type AddUserToChannelOperationTypes = {
-  userId: number;
-  channelId: number;
+  userId: string;
+  channelId: string;
 };

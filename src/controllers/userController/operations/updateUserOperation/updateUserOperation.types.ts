@@ -1,5 +1,5 @@
 export type UpdateUserOperationTypes = {
-  id: number;
+  id: string;
   userName: string;
   firstName: string;
   lastName?: string;
