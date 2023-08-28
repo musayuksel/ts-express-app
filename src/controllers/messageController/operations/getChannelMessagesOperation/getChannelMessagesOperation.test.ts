@@ -2,7 +2,7 @@ import { mockMessage, prismaMock } from '../../../../lib';
 import { getChannelMessagesOperation } from './getChannelMessagesOperation';
 
 jest.mock('../../utils', () => ({
-  addSignedUrlToMessage: jest.fn().mockImplementation((message) => message), // Replace with your desired mock implementation
+  addSignedUrlToMessage: jest.fn().mockImplementation((message) => message),
 }));
 
 describe('getChannelMessagesOperation', () => {
