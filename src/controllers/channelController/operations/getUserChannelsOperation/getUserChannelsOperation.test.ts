@@ -3,9 +3,9 @@ import { getUserChannelsOperation } from './getUserChannelsOperation';
 
 describe('getUserChannelsOperation', () => {
   it('should return all channels for user', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    prismaMock.users.findUnique.mockResolvedValue({ mockUser, channels: [mockChannel, mockChannel] } as any);
-    // TODO - fix return type
+    const mockUserWithChannels = { ...mockUser, channels: [{ ...mockChannel }, { ...mockChannel }] };
+
+    prismaMock.users.findUnique.mockResolvedValue(mockUserWithChannels);
 
     const userChannels = await getUserChannelsOperation({ userName: 'testUserName' });
 
@@ -17,9 +17,9 @@ describe('getUserChannelsOperation', () => {
   });
 
   it('should throw an error if user has no channels', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    prismaMock.users.findUnique.mockResolvedValue({ mockUser, channels: null } as any);
-    // TODO - fix return type
+    const mockUserWithoutChannels = { ...mockUser, channels: null };
+
+    prismaMock.users.findUnique.mockResolvedValue(mockUserWithoutChannels);
 
     await expect(() => getUserChannelsOperation({ userName: 'testUserName' })).rejects.toThrow('User has no channels');
   });
