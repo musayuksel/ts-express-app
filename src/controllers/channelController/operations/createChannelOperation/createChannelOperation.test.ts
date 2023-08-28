@@ -2,7 +2,7 @@ import { prismaMock } from '../../../../lib/prisma';
 import { createChannelOperation } from './createChannelOperation';
 
 describe('create operation', () => {
-  const mockDate = new Date('2021-01-01T00:00:00.000Z');
+  const mockDate = new Date('2023-01-01T00:00:00.000Z');
 
   const mockChannel = {
     id: 'uuid_random_string',
