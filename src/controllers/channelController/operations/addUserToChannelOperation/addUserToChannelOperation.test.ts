@@ -1,26 +1,7 @@
-import { prismaMock } from '../../../../lib';
+import { mockChannel, mockUser, prismaMock } from '../../../../lib';
 import { addUserToChannelOperation } from './addUserToChannelOperation';
 
 describe('addUserToChannelOperation', () => {
-  const mockDate = new Date('2023-01-01T00:00:00.000Z');
-
-  const mockChannel = {
-    id: 'uuid_random_channel_id',
-    channelName: 'testChannelName',
-    createdAt: mockDate,
-    updatedAt: mockDate,
-  };
-
-  const mockUser = {
-    id: 'uuid_random_user_id',
-    userName: 'testUsername',
-    userEmail: 'testEmail',
-    firstName: 'testFirstName',
-    lastName: 'testLastName',
-    createdAt: mockDate,
-    updatedAt: mockDate,
-  };
-
   it('should add user to channel', async () => {
     prismaMock.channels.findUnique.mockResolvedValue(mockChannel);
     prismaMock.users.findUnique.mockResolvedValue(mockUser);
