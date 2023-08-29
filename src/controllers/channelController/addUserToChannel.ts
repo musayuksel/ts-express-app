@@ -1,18 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
-import { Channel } from '../../models/channel';
-import { CustomError } from '../../middlewares/globalErrorHandler';
+import { AddUserToChannelOperationTypes, addUserToChannelOperation } from './operations';
+import { formatResponse } from '../../utils';
 
-export const addUserToChannel = async (req: Request, res: Response, next: NextFunction) => {
+interface AddUserToChannelRequest<T> extends Request {
+  body: T;
+}
+
+export const addUserToChannel = async (
+  req: AddUserToChannelRequest<AddUserToChannelOperationTypes>,
+  res: Response,
+  next: NextFunction,
+) => {
   const { userId, channelId } = req.body;
 
   try {
-    const channel = await Channel.findByPk(channelId);
+    const channel = await addUserToChannelOperation({ userId, channelId });
 
-    if (!channel) {
-      throw new CustomError(`Channel with id ${channelId} not found`, 404);
-    }
-    await channel.addUser(userId);
-    res.json(channel);
+    res.json(formatResponse({ success: true, data: channel }));
   } catch (error) {
     next(error);
   }

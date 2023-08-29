@@ -1,16 +1,25 @@
 import { Request, Response, NextFunction } from 'express';
-import { Message } from '../../models/message';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { GetUserMessagesOperationTypes, getUserMessagesOperation } from './operations';
+import { formatResponse } from '../../utils';
 
-export const getUserMessages = async (req: Request, res: Response, next: NextFunction) => {
-  const { userId } = req.params;
+interface GetUserMessagesRequest<T extends ParamsDictionary> extends Request {
+  params: T;
+}
+
+export const getUserMessages = async (
+  req: GetUserMessagesRequest<GetUserMessagesOperationTypes>,
+  res: Response,
+  next: NextFunction,
+) => {
+  const userIdPayload = {
+    userId: req.params.userId,
+  };
+
   try {
-    const messages = await Message.findAll({
-      where: {
-        UserId: userId,
-      },
-    });
+    const userMessages = await getUserMessagesOperation(userIdPayload);
 
-    res.json(messages);
+    res.json(formatResponse({ success: true, data: userMessages }));
   } catch (error) {
     next(error);
   }

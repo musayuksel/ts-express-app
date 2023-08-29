@@ -12,10 +12,9 @@ import {
 } from '../schemas/message.schema';
 const router = express.Router();
 
-router.get('/', messageController.getAllMessages);
-router.get('/:userId', validateReqParamSchema(userIdParamSchema), messageController.getUserMessages);
-router.get('/channel/:channelId', validateReqParamSchema(channelIdParamSchema), messageController.getChannelMessages);
 router.post('/', logBody, validateReqBodySchema(messageSchema), messageController.createMessage);
+router.get('/channel/:channelId', validateReqParamSchema(channelIdParamSchema), messageController.getChannelMessages);
+router.get('/:userId', validateReqParamSchema(userIdParamSchema), messageController.getUserMessages);
 router.post('/generateS3SignInUrl', validateReqBodySchema(fileNameSchema), messageController.generateS3SignInUrl);
 router.delete('/:messageId', validateReqParamSchema(messageIdParamSchema), messageController.deleteMessage);
 router.patch('/', validateReqBodySchema(updateMessageSchema), messageController.updateMessage);

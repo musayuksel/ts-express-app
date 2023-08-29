@@ -1,30 +1,29 @@
 import { Request, Response, NextFunction } from 'express';
-import { CustomError } from '../../middlewares/globalErrorHandler';
-import { User } from '../../models/user';
+import { UpdateUserOperationTypes, updateUserOperation } from './operations';
+import { formatResponse } from '../../utils';
 
-export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+interface UpdateUserRequest<T> extends Request {
+  body: T;
+}
+
+export const updateUser = async (
+  req: UpdateUserRequest<UpdateUserOperationTypes>,
+  res: Response,
+  next: NextFunction,
+) => {
   const { id, userName, firstName, lastName } = req.body;
+
+  const userPayload = {
+    id: id,
+    userName: userName,
+    firstName: firstName,
+    lastName: lastName,
+  };
+
   try {
-    const user = await User.findByPk(id);
-    if (user === null) {
-      throw new CustomError(`User with id ${id} not found`, 404);
-    }
+    const updatedUser = await updateUserOperation(userPayload);
 
-    await User.update(
-      {
-        userName,
-        firstName,
-        lastName,
-      },
-      {
-        where: {
-          id: id,
-        },
-      },
-    );
-
-    const updatedUser = await User.findByPk(id);
-    res.json({ 'updatedUser:': updatedUser });
+    res.json(formatResponse({ success: true, data: updatedUser }));
   } catch (error) {
     next(error);
   }

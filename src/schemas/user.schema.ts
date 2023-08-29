@@ -8,7 +8,7 @@ export const userSchema = Joi.object({
 });
 
 export const updateUserSchema = Joi.object({
-  id: Joi.number().required(),
+  id: Joi.string().required(),
   userName: Joi.string().required(),
   firstName: Joi.string().required(),
   lastName: Joi.string().allow(null),

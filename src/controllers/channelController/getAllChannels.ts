@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { Channel } from '../../models/channel';
+import { getAllChannelsOperation } from './operations';
+import { formatResponse } from '../../utils';
 
 export const getAllChannels = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const channels = await Channel.findAll();
+    const channels = await getAllChannelsOperation();
 
-    res.json(channels);
+    res.json(formatResponse({ success: true, data: channels }));
   } catch (error) {
     next(error);
   }

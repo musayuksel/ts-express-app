@@ -1,25 +1,25 @@
 import { Request, Response, NextFunction } from 'express';
-import { Message } from '../../models/message';
-import { addSignedUrlToMessage } from './utils/addSignedUrlToMessage';
+import { GetChannelMessagesOperationTypes, getChannelMessagesOperation } from './operations';
+import { ParamsDictionary } from 'express-serve-static-core';
+import { formatResponse } from '../../utils';
 
-export const getChannelMessages = async (req: Request, res: Response, next: NextFunction) => {
-  const { channelId } = req.params;
+interface GetChannelMessagesRequest<T extends ParamsDictionary> extends Request {
+  params: T;
+}
+
+export const getChannelMessages = async (
+  req: GetChannelMessagesRequest<GetChannelMessagesOperationTypes>,
+  res: Response,
+  next: NextFunction,
+) => {
+  const payload = {
+    channelId: req.params.channelId,
+  };
+
   try {
-    const messages = await Message.findAll({
-      where: {
-        ChannelId: channelId,
-      },
-    });
+    const channelMessages = await getChannelMessagesOperation(payload);
 
-    const messagesWithSignedUrlPromises = messages.map(async (currentMessage) => {
-      if (currentMessage.attachment) {
-        currentMessage.attachment = await addSignedUrlToMessage(currentMessage);
-      }
-      return currentMessage;
-    });
-
-    const messagesWithSignedUrl = await Promise.all(messagesWithSignedUrlPromises);
-    res.json(messagesWithSignedUrl);
+    res.json(formatResponse({ success: true, data: channelMessages }));
   } catch (error) {
     next(error);
   }

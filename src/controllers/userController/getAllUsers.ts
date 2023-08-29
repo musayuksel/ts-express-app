@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../../models/user';
+import { getAllUsersOperation } from './operations';
+import { formatResponse } from '../../utils';
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const users = await User.findAll();
+    const allUsers = await getAllUsersOperation();
 
-    res.json(users);
+    res.json(formatResponse({ success: true, data: allUsers }));
   } catch (error) {
     next(error);
   }

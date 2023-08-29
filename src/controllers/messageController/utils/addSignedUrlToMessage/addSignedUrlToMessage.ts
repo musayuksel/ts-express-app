@@ -1,10 +1,10 @@
 import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { Message } from '../../../models/message';
-import { s3 } from './configureAWS';
+import { s3 } from '../configureAWS';
+import { AddSignedUrlToMessageTypes } from './addSignedUrlToMessage.types';
 
-export const addSignedUrlToMessage = async (currentMessage: Message) => {
-  const messageKey = currentMessage?.attachment || undefined;
+export const addSignedUrlToMessage = async (attachment: AddSignedUrlToMessageTypes) => {
+  const messageKey = attachment.attachment || undefined;
 
   const getObjectParams = {
     Bucket: process.env.S3_BUCKET_NAME,
