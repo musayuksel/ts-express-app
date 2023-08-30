@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { app } from '../../index';
+import { app } from '../../app';
 import { createChannelOperation } from './operations';
 import { formatResponse } from '../../utils';
 
@@ -26,7 +26,7 @@ jest.mock('aws-jwt-verify', () => ({
 }));
 
 describe('createChannel', () => {
-  it('should return a 200 response code and a new thing', async () => {
+  it('should return a 200 response code and a new channel', async () => {
     const { body } = await request(app).post('/api/channels').set('Authorization', 'Bearer mockToken').send({
       channelName: 'mock channel name',
     });
