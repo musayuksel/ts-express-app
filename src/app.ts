@@ -11,10 +11,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use('/api/health-check', authenticateRequest, healthCheckRoutes);
-app.use('/api/messages', messagesRoutes); //TODO: add authenticateRequest
-app.use('/api/users', usersRoutes); //TODO: add authenticateRequest
+app.use('/api/health-check', healthCheckRoutes);
+app.use('/api/messages', authenticateRequest, messagesRoutes);
+app.use('/api/users', authenticateRequest, usersRoutes);
 app.use('/api/channels', authenticateRequest, channelRoutes);
+
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
   const error = new CustomError(`Route ${req.originalUrl} not found!!!`, 404);
   next(error);
