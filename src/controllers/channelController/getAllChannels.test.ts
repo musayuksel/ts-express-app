@@ -1,28 +1,20 @@
+import { mockCognitoJwtVerifier, mockFunction } from '../utils';
 import request from 'supertest';
 import { app } from '../../app';
 import { getAllChannelsOperation } from './operations';
 import { formatResponse } from '../../utils';
 
 jest.mock('./operations', () => ({
-  getAllChannelsOperation: jest.fn(),
+  getAllChannelsOperation: mockFunction,
 }));
 
 jest.mock('../../utils', () => ({
-  formatResponse: jest.fn(),
+  formatResponse: mockFunction,
 }));
 
 jest.mock('aws-jwt-verify', () => ({
   ...jest.requireActual('aws-jwt-verify'),
-  CognitoJwtVerifier: {
-    create: () => ({
-      verify: (token: string) => {
-        if (token === 'mockToken') {
-          return { username: 'mockUsername' };
-        }
-        throw new Error('mock aws error');
-      },
-    }),
-  },
+  CognitoJwtVerifier: mockCognitoJwtVerifier,
 }));
 
 describe('getAllChannels', () => {
