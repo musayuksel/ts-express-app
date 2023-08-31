@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { UpdateUserOperationTypes, updateUserOperation } from './operations';
-import { formatResponse } from '../../utils';
+import { UpdateUserOperationTypes, updateUserOperation } from '../operations';
+import { formatResponse } from '../../../utils';
 
 interface UpdateUserRequest<T> extends Request {
   body: T;

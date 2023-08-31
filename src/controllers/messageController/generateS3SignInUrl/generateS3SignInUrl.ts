@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
-import { s3 } from './utils/configureAWS';
+import { s3 } from '../utils/configureAWS';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 export const generateS3SignInUrl = async (req: Request, res: Response, next: NextFunction) => {

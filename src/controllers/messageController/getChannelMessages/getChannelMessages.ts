@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { GetChannelMessagesOperationTypes, getChannelMessagesOperation } from './operations';
+import { GetChannelMessagesOperationTypes, getChannelMessagesOperation } from '../operations';
 import { ParamsDictionary } from 'express-serve-static-core';
-import { formatResponse } from '../../utils';
+import { formatResponse } from '../../../utils';
 
 interface GetChannelMessagesRequest<T extends ParamsDictionary> extends Request {
   params: T;
