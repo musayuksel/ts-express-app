@@ -1,14 +1,14 @@
-import { mockCognitoJwtVerifier, mockFunction } from '../utils';
+import { mockCognitoJwtVerifier, mockFunction } from '../../utils';
 import request from 'supertest';
-import { app } from '../../app';
-import { getAllChannelsOperation } from './operations';
-import { formatResponse } from '../../utils';
+import { app } from '../../../app';
+import { getAllChannelsOperation } from '../operations';
+import { formatResponse } from '../../../utils';
 
-jest.mock('./operations', () => ({
+jest.mock('../operations', () => ({
   getAllChannelsOperation: mockFunction,
 }));
 
-jest.mock('../../utils', () => ({
+jest.mock('../../../utils', () => ({
   formatResponse: mockFunction,
 }));
 

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { createChannelOperation, CreateChannelOperationTypes } from './operations';
-import { formatResponse } from '../../utils';
+import { createChannelOperation, CreateChannelOperationTypes } from '../operations';
+import { formatResponse } from '../../../utils';
 
 interface CreateChannelRequest<T> extends Request {
   body: T;
