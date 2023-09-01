@@ -19,7 +19,7 @@ jest.mock('aws-jwt-verify', () => ({
 
 describe('addUserToChannel', () => {
   it('should return a 200 response code and the current channel', async () => {
-    const { body } = await request(app).post('/api/channels/addUser').set('Authorization', 'Bearer mockToken').send({
+    const response = await request(app).post('/api/channels/addUser').set('Authorization', 'Bearer mockToken').send({
       userId: 'mock user id',
       channelId: 'mock channel id',
     });
@@ -29,9 +29,11 @@ describe('addUserToChannel', () => {
       channelId: 'mock channel id',
     });
 
+    expect(response.statusCode).toBe(200);
+
     expect(formatResponse).toHaveBeenCalledWith({
       success: true,
-      data: body.data,
+      data: response.body.data,
     });
   });
 });

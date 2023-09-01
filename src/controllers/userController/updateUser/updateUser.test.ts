@@ -32,6 +32,8 @@ describe('updateUser', () => {
 
     expect(updateUserOperation).toHaveBeenCalledWith(mockUpdateUser);
 
+    expect(response.statusCode).toBe(200);
+
     expect(formatResponse).toHaveBeenCalledWith({
       success: true,
       data: response.body.data,

@@ -19,7 +19,7 @@ jest.mock('aws-jwt-verify', () => ({
 
 describe('createChannel', () => {
   it('should return a 200 response code and a new channel', async () => {
-    const { body } = await request(app).post('/api/channels').set('Authorization', 'Bearer mockToken').send({
+    const response = await request(app).post('/api/channels').set('Authorization', 'Bearer mockToken').send({
       channelName: 'mock channel name',
     });
 
@@ -27,9 +27,11 @@ describe('createChannel', () => {
       channelName: 'mock channel name',
     });
 
+    expect(response.statusCode).toBe(200);
+
     expect(formatResponse).toHaveBeenCalledWith({
       success: true,
-      data: body.data,
+      data: response.body.data,
     });
   });
 });

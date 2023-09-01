@@ -32,6 +32,8 @@ describe('createMessage', () => {
 
     expect(createMessageOperation).toHaveBeenCalledWith(mockMessage);
 
+    expect(response.statusCode).toBe(200);
+
     expect(formatResponse).toHaveBeenCalledWith({
       success: true,
       data: response.body.data,

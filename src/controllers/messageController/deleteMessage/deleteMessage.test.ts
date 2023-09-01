@@ -23,6 +23,8 @@ describe('deleteMessage', () => {
 
     expect(deleteMessageOperation).toHaveBeenCalledWith({ messageId: 'mockMessageId' });
 
+    expect(response.statusCode).toBe(200);
+
     expect(formatResponse).toHaveBeenCalledWith({
       success: true,
       data: response.body.data,

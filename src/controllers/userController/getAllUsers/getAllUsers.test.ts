@@ -23,6 +23,8 @@ describe('getAllUsers', () => {
 
     expect(getAllUsersOperation).toHaveBeenCalledWith();
 
+    expect(response.statusCode).toBe(200);
+
     expect(formatResponse).toHaveBeenCalledWith({
       success: true,
       data: response.body.data,
