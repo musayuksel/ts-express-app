@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
-import { GetUserMessagesOperationTypes, getUserMessagesOperation } from './operations';
-import { formatResponse } from '../../utils';
+import { GetUserMessagesOperationTypes, getUserMessagesOperation } from '../operations';
+import { formatResponse } from '../../../utils';
 
 interface GetUserMessagesRequest<T extends ParamsDictionary> extends Request {
   params: T;

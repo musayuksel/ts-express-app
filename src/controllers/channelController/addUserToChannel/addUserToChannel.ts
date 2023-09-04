@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { AddUserToChannelOperationTypes, addUserToChannelOperation } from './operations';
-import { formatResponse } from '../../utils';
+import { AddUserToChannelOperationTypes, addUserToChannelOperation } from '../operations';
+import { formatResponse } from '../../../utils';
 
 interface AddUserToChannelRequest<T> extends Request {
   body: T;

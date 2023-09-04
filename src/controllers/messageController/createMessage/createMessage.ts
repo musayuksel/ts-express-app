@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { CreateMessageOperationTypes, createMessageOperation } from './operations';
-import { formatResponse } from '../../utils';
+import { CreateMessageOperationTypes, createMessageOperation } from '../operations';
+import { formatResponse } from '../../../utils';
 interface CreateMessageRequest<T> extends Request {
   body: T;
 }

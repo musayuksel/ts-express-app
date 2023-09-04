@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { getAllChannelsOperation } from './operations';
-import { formatResponse } from '../../utils';
+import { getAllChannelsOperation } from '../operations';
+import { formatResponse } from '../../../utils';
 
 export const getAllChannels = async (req: Request, res: Response, next: NextFunction) => {
   try {

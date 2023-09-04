@@ -1,5 +1,4 @@
 import express, { Request, Response, NextFunction } from 'express';
-import dotenv from 'dotenv';
 import healthCheckRoutes from './routes/healthCheckRoutes';
 import messagesRoutes from './routes/messagesRoutes';
 import usersRoutes from './routes/usersRoutes';
@@ -8,17 +7,14 @@ import { CustomError, globalErrorHandler } from './middlewares/globalErrorHandle
 import { authenticateRequest } from './middlewares/authenticateRequest';
 import cors from 'cors';
 
-dotenv.config();
-const PORT = parseInt(process.env.PORT || '3000');
-
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use('/api/health-check', authenticateRequest, healthCheckRoutes);
-app.use('/api/messages', messagesRoutes); //TODO: add authenticateRequest
-app.use('/api/users', usersRoutes); //TODO: add authenticateRequest
-app.use('/api/channels', channelRoutes); //TODO: add authenticateRequest
+app.use('/api/health-check', healthCheckRoutes);
+app.use('/api/messages', authenticateRequest, messagesRoutes);
+app.use('/api/users', authenticateRequest, usersRoutes);
+app.use('/api/channels', authenticateRequest, channelRoutes);
 
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
   const error = new CustomError(`Route ${req.originalUrl} not found!!!`, 404);
@@ -27,10 +23,4 @@ app.use('*', (req: Request, res: Response, next: NextFunction) => {
 
 app.use(globalErrorHandler);
 
-async function startServer() {
-  app.listen(PORT, () => {
-    console.info(`Server is running on port ${PORT}`);
-  });
-}
-
-startServer();
+export { app };

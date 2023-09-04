@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { getUserChannelsOperation } from './operations';
-import { formatResponse } from '../../utils';
+import { getUserChannelsOperation } from '../operations';
+import { formatResponse } from '../../../utils';
 
 export const getUserChannels = async (req: Request, res: Response, next: NextFunction) => {
   const userPayload = {

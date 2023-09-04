@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
-import { DeleteMessageOperationTypes, deleteMessageOperation } from './operations';
-import { formatResponse } from '../../utils';
+import { DeleteMessageOperationTypes, deleteMessageOperation } from '../operations';
+import { formatResponse } from '../../../utils';
 
 interface DeleteMessageRequest<T extends ParamsDictionary> extends Request {
   params: T;
