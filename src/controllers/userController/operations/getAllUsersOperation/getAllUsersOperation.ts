@@ -1,5 +1,5 @@
-import { prismaClient } from '../../../../lib';
+import { Context } from '../../../../lib';
 
-export const getAllUsersOperation = async () => {
-  return await prismaClient.users.findMany();
+export const getAllUsersOperation = async (context: Context) => {
+  return await context.prismaClient.users.findMany();
 };
