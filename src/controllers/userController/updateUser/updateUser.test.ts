@@ -17,6 +17,11 @@ jest.mock('aws-jwt-verify', () => ({
   CognitoJwtVerifier: mockCognitoJwtVerifier,
 }));
 
+jest.mock('../../../lib', () => ({
+  ...jest.requireActual('../../../lib'),
+  prismaClient: 'mockPrismaClient',
+}));
+
 describe('updateUser', () => {
   const mockUpdateUser = {
     id: 'mockUserId',
@@ -30,7 +35,7 @@ describe('updateUser', () => {
       .set('Authorization', 'Bearer mockToken')
       .send(mockUpdateUser);
 
-    expect(updateUserOperation).toHaveBeenCalledWith(mockUpdateUser);
+    expect(updateUserOperation).toHaveBeenCalledWith(mockUpdateUser, { prismaClient: 'mockPrismaClient' });
 
     expect(response.statusCode).toBe(200);
 
