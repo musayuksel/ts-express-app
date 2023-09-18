@@ -17,11 +17,21 @@ jest.mock('aws-jwt-verify', () => ({
   CognitoJwtVerifier: mockCognitoJwtVerifier,
 }));
 
+jest.mock('../../../lib', () => ({
+  ...jest.requireActual('../../../lib'),
+  prismaClient: 'mockPrismaClient',
+}));
+
 describe('deleteMessage', () => {
   it('should return a 200 response code and deleted message', async () => {
     const response = await request(app).delete('/api/messages/mockMessageId').set('Authorization', 'Bearer mockToken');
 
-    expect(deleteMessageOperation).toHaveBeenCalledWith({ messageId: 'mockMessageId' });
+    expect(deleteMessageOperation).toHaveBeenCalledWith(
+      { messageId: 'mockMessageId' },
+      {
+        prismaClient: 'mockPrismaClient',
+      },
+    );
 
     expect(response.statusCode).toBe(200);
 
