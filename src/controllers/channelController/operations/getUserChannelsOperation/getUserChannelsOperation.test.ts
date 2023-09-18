@@ -1,4 +1,4 @@
-import { Context, MockContext, createMockContext, mockChannel, mockUser, prismaMock } from '../../../../lib';
+import { Context, MockContext, createMockContext, mockChannel, mockUser } from '../../../../lib';
 import { getUserChannelsOperation } from './getUserChannelsOperation';
 
 let mockContext: MockContext;
@@ -29,7 +29,7 @@ describe('getUserChannelsOperation', () => {
   it('should throw an error if user has no channels', async () => {
     const mockUserWithoutChannels = { ...mockUser, channels: null };
 
-    prismaMock.users.findUnique.mockResolvedValue(mockUserWithoutChannels);
+    mockContext.prismaClient.users.findUnique.mockResolvedValue(mockUserWithoutChannels);
 
     await expect(() => getUserChannelsOperation({ userName: 'testUserName' }, context)).rejects.toThrow(
       'User has no channels',

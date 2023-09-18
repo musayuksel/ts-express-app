@@ -1,4 +1,4 @@
-import { Context, MockContext, createMockContext, mockMessage, mockUser, prismaMock } from '../../../../lib';
+import { Context, MockContext, createMockContext, mockMessage, mockUser } from '../../../../lib';
 import { getUserMessagesOperation } from './getUserMessagesOperation';
 
 jest.mock('../../utils', () => ({
@@ -25,7 +25,7 @@ describe('getUserMessagesOperation', () => {
   });
 
   it('should throw an error if user does not exist', async () => {
-    prismaMock.users.findUnique.mockResolvedValue(null);
+    mockContext.prismaClient.users.findUnique.mockResolvedValue(null);
 
     await expect(() => getUserMessagesOperation({ userId: 'testUserId' }, context)).rejects.toThrow('User not found');
   });
