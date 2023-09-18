@@ -8,6 +8,7 @@ beforeEach(() => {
   mockContext = createMockContext();
   context = mockContext as unknown as Context;
 });
+
 describe('getAllChannelsOperation', () => {
   it('should return all channels', async () => {
     mockContext.prismaClient.channels.findMany.mockResolvedValue([mockChannel]);

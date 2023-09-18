@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { getUserChannelsOperation } from '../operations';
 import { formatResponse } from '../../../utils';
+import { prismaClient } from '../../../lib';
 
 export const getUserChannels = async (req: Request, res: Response, next: NextFunction) => {
   const userPayload = {
@@ -8,7 +9,7 @@ export const getUserChannels = async (req: Request, res: Response, next: NextFun
   };
 
   try {
-    const userChannels = await getUserChannelsOperation(userPayload);
+    const userChannels = await getUserChannelsOperation(userPayload, { prismaClient });
 
     res.json(formatResponse({ success: true, data: userChannels }));
   } catch (error) {
