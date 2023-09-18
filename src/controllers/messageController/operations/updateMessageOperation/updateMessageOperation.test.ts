@@ -1,5 +1,13 @@
-import { mockMessage, prismaMock } from '../../../../lib';
+import { Context, MockContext, createMockContext, mockMessage } from '../../../../lib';
 import { updateMessageOperation } from './updateMessageOperation';
+
+let mockContext: MockContext;
+let context: Context;
+
+beforeEach(() => {
+  mockContext = createMockContext();
+  context = mockContext as unknown as Context;
+});
 
 describe('updateMessageOperation', () => {
   it('should update a message', async () => {
@@ -9,9 +17,9 @@ describe('updateMessageOperation', () => {
       attachment: 'testAttachment',
     };
 
-    prismaMock.messages.update.mockResolvedValue({ ...mockMessage, content: 'updated testContent' });
+    mockContext.prismaClient.messages.update.mockResolvedValue({ ...mockMessage, content: 'updated testContent' });
 
-    const updatedMessage = await updateMessageOperation(mockMessagePayload);
+    const updatedMessage = await updateMessageOperation(mockMessagePayload, context);
 
     expect(updatedMessage.content).toBe(mockMessagePayload.content);
   });
