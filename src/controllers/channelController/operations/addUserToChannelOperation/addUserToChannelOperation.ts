@@ -1,9 +1,12 @@
-import { prismaClient } from '../../../../lib';
+import { Context } from '../../../../lib';
 import { CustomError } from '../../../../middlewares/globalErrorHandler';
 import { AddUserToChannelOperationTypes } from './addUserToChannelOperation.types';
 
-export const addUserToChannelOperation = async ({ userId, channelId }: AddUserToChannelOperationTypes) => {
-  const channel = await prismaClient.channels.findUnique({
+export const addUserToChannelOperation = async (
+  { userId, channelId }: AddUserToChannelOperationTypes,
+  context: Context,
+) => {
+  const channel = await context.prismaClient.channels.findUnique({
     where: {
       id: channelId,
     },
@@ -13,7 +16,7 @@ export const addUserToChannelOperation = async ({ userId, channelId }: AddUserTo
     throw new CustomError(`Channel with id ${channelId} not found`, 404);
   }
 
-  const user = await prismaClient.users.findUnique({
+  const user = await context.prismaClient.users.findUnique({
     where: {
       id: userId,
     },
@@ -23,7 +26,7 @@ export const addUserToChannelOperation = async ({ userId, channelId }: AddUserTo
     throw new CustomError(`User with id ${userId} not found`, 404);
   }
 
-  return await prismaClient.channels.update({
+  return await context.prismaClient.channels.update({
     where: {
       id: channelId,
     },

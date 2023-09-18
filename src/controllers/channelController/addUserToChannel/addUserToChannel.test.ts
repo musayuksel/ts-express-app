@@ -17,6 +17,11 @@ jest.mock('aws-jwt-verify', () => ({
   CognitoJwtVerifier: mockCognitoJwtVerifier,
 }));
 
+jest.mock('../../../lib', () => ({
+  ...jest.requireActual('../../../lib'),
+  prismaClient: 'mockPrismaClient',
+}));
+
 describe('addUserToChannel', () => {
   it('should return a 200 response code and the current channel', async () => {
     const response = await request(app).post('/api/channels/addUser').set('Authorization', 'Bearer mockToken').send({
@@ -24,10 +29,13 @@ describe('addUserToChannel', () => {
       channelId: 'mock channel id',
     });
 
-    expect(addUserToChannelOperation).toHaveBeenCalledWith({
-      userId: 'mock user id',
-      channelId: 'mock channel id',
-    });
+    expect(addUserToChannelOperation).toHaveBeenCalledWith(
+      {
+        userId: 'mock user id',
+        channelId: 'mock channel id',
+      },
+      { prismaClient: 'mockPrismaClient' },
+    );
 
     expect(response.statusCode).toBe(200);
 
