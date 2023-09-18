@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { createChannelOperation, CreateChannelOperationTypes } from '../operations';
 import { formatResponse } from '../../../utils';
+import { prismaClient } from '../../../lib';
 
 interface CreateChannelRequest<T> extends Request {
   body: T;
@@ -17,7 +18,7 @@ export const createChannel = async (
   };
 
   try {
-    const channel = await createChannelOperation(channelPayload);
+    const channel = await createChannelOperation(channelPayload, { prismaClient });
 
     res.json(formatResponse({ success: true, data: channel }));
   } catch (error) {

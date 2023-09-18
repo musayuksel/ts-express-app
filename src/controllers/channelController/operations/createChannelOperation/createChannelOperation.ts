@@ -1,9 +1,9 @@
-import { prismaClient } from '../../../../lib';
+import { Context } from '../../../../lib';
 import { CustomError } from '../../../../middlewares/globalErrorHandler';
 import { CreateChannelOperationTypes } from './createChannelOperation.types';
 
-export const createChannelOperation = async (channel: CreateChannelOperationTypes) => {
-  const currentChannel = await prismaClient.channels.findUnique({
+export const createChannelOperation = async (channel: CreateChannelOperationTypes, context: Context) => {
+  const currentChannel = await context.prismaClient.channels.findUnique({
     where: {
       channelName: channel.channelName,
     },
@@ -13,7 +13,7 @@ export const createChannelOperation = async (channel: CreateChannelOperationType
     throw new CustomError(`Channel with name "${channel.channelName}" already exists`, 400);
   }
 
-  return await prismaClient.channels.create({
+  return await context.prismaClient.channels.create({
     data: channel,
   });
 };
