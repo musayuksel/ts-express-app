@@ -1,5 +1,13 @@
-import { mockChannel, mockMessage, mockUser, prismaMock } from '../../../../lib';
+import { Context, MockContext, createMockContext, mockChannel, mockMessage, mockUser } from '../../../../lib';
 import { createMessageOperation } from './createMessageOperation';
+
+let mockContext: MockContext;
+let context: Context;
+
+beforeEach(() => {
+  mockContext = createMockContext();
+  context = mockContext as unknown as Context;
+});
 
 describe('createMessageOperation', () => {
   const mockMessagePayload = {
@@ -12,26 +20,26 @@ describe('createMessageOperation', () => {
   it('should create a message', async () => {
     const mockChannelWithUsers = { ...mockChannel, users: [{ ...mockUser }] };
 
-    prismaMock.messages.create.mockResolvedValue(mockMessage);
-    prismaMock.channels.findUnique.mockResolvedValue(mockChannelWithUsers);
+    mockContext.prismaClient.messages.create.mockResolvedValue(mockMessage);
+    mockContext.prismaClient.channels.findUnique.mockResolvedValue(mockChannelWithUsers);
 
-    const createdMessage = await createMessageOperation(mockMessagePayload);
+    const createdMessage = await createMessageOperation(mockMessagePayload, context);
 
     expect(createdMessage).toBe(mockMessage);
   });
 
   it('should throw an error if channel does not exist', async () => {
-    prismaMock.channels.findUnique.mockResolvedValue(null);
+    mockContext.prismaClient.channels.findUnique.mockResolvedValue(null);
 
-    await expect(() => createMessageOperation(mockMessagePayload)).rejects.toThrow('Channel does not exist!');
+    await expect(() => createMessageOperation(mockMessagePayload, context)).rejects.toThrow('Channel does not exist!');
   });
 
   it('should throw an error if user is not in the channel', async () => {
     const mockChannelWithoutUsers = { ...mockChannel, users: [] };
 
-    prismaMock.channels.findUnique.mockResolvedValue(mockChannelWithoutUsers);
+    mockContext.prismaClient.channels.findUnique.mockResolvedValue(mockChannelWithoutUsers);
 
-    await expect(() => createMessageOperation(mockMessagePayload)).rejects.toThrow(
+    await expect(() => createMessageOperation(mockMessagePayload, context)).rejects.toThrow(
       'User is not in the channel! Please join the channel first!',
     );
   });

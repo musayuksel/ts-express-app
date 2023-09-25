@@ -1,11 +1,11 @@
 import { DeleteObjectCommand } from '@aws-sdk/client-s3';
-import { prismaClient } from '../../../../lib';
+import { Context } from '../../../../lib';
 import { CustomError } from '../../../../middlewares/globalErrorHandler';
 import { DeleteMessageOperationTypes } from './deleteMessageOperation.types';
 import { s3 } from '../../utils/configureAWS';
 
-export const deleteMessageOperation = async (messageIdPayload: DeleteMessageOperationTypes) => {
-  const message = await prismaClient.messages.findUnique({
+export const deleteMessageOperation = async (messageIdPayload: DeleteMessageOperationTypes, context: Context) => {
+  const message = await context.prismaClient.messages.findUnique({
     where: {
       id: messageIdPayload.messageId,
     },
@@ -27,7 +27,7 @@ export const deleteMessageOperation = async (messageIdPayload: DeleteMessageOper
     await s3.send(command);
   }
 
-  return await prismaClient.messages.delete({
+  return await context.prismaClient.messages.delete({
     where: {
       id: messageIdPayload.messageId,
     },

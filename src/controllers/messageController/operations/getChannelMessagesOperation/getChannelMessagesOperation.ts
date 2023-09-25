@@ -1,10 +1,13 @@
-import { prismaClient } from '../../../../lib';
+import { Context } from '../../../../lib';
 import { addSignedUrlToMessage } from '../../utils';
 
 import { GetChannelMessagesOperationTypes } from './getChannelMessagesOperation.types';
 
-export const getChannelMessagesOperation = async (channelIdPayload: GetChannelMessagesOperationTypes) => {
-  const messages = await prismaClient.messages.findMany({
+export const getChannelMessagesOperation = async (
+  channelIdPayload: GetChannelMessagesOperationTypes,
+  context: Context,
+) => {
+  const messages = await context.prismaClient.messages.findMany({
     where: {
       channelId: channelIdPayload.channelId,
     },

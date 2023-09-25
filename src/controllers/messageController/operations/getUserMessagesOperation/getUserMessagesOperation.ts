@@ -1,10 +1,10 @@
-import { prismaClient } from '../../../../lib';
+import { Context } from '../../../../lib';
 import { CustomError } from '../../../../middlewares/globalErrorHandler';
 import { addSignedUrlToMessage } from '../../utils';
 import { GetUserMessagesOperationTypes } from './getUserMessagesOperation.types';
 
-export const getUserMessagesOperation = async (userIdPayload: GetUserMessagesOperationTypes) => {
-  const user = await prismaClient.users.findUnique({
+export const getUserMessagesOperation = async (userIdPayload: GetUserMessagesOperationTypes, context: Context) => {
+  const user = await context.prismaClient.users.findUnique({
     where: {
       id: userIdPayload.userId,
     },

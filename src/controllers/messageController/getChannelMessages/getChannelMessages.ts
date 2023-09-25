@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { GetChannelMessagesOperationTypes, getChannelMessagesOperation } from '../operations';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { formatResponse } from '../../../utils';
+import { prismaClient } from '../../../lib';
 
 interface GetChannelMessagesRequest<T extends ParamsDictionary> extends Request {
   params: T;
@@ -17,7 +18,7 @@ export const getChannelMessages = async (
   };
 
   try {
-    const channelMessages = await getChannelMessagesOperation(payload);
+    const channelMessages = await getChannelMessagesOperation(payload, { prismaClient });
 
     res.json(formatResponse({ success: true, data: channelMessages }));
   } catch (error) {

@@ -1,5 +1,5 @@
-import { prismaClient } from '../../../../lib';
+import { Context } from '../../../../lib';
 
-export const getAllChannelsOperation = async () => {
-  return await prismaClient.channels.findMany();
+export const getAllChannelsOperation = async (context: Context) => {
+  return await context.prismaClient.channels.findMany();
 };

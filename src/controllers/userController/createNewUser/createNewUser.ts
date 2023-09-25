@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { CreateNewUserOperationTypes, createNewUserOperation } from '../operations';
 import { formatResponse } from '../../../utils';
+import { prismaClient } from '../../../lib';
 
 interface CreateNewUserRequest<T> extends Request {
   body: T;
@@ -21,7 +22,7 @@ export const createNewUser = async (
   };
 
   try {
-    const newUser = await createNewUserOperation(payload);
+    const newUser = await createNewUserOperation(payload, { prismaClient });
 
     res.json(formatResponse({ success: true, data: newUser }));
   } catch (error) {

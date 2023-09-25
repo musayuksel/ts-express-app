@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { UpdateUserOperationTypes, updateUserOperation } from '../operations';
 import { formatResponse } from '../../../utils';
+import { prismaClient } from '../../../lib';
 
 interface UpdateUserRequest<T> extends Request {
   body: T;
@@ -21,7 +22,7 @@ export const updateUser = async (
   };
 
   try {
-    const updatedUser = await updateUserOperation(userPayload);
+    const updatedUser = await updateUserOperation(userPayload, { prismaClient });
 
     res.json(formatResponse({ success: true, data: updatedUser }));
   } catch (error) {

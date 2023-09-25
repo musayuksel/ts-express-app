@@ -17,11 +17,19 @@ jest.mock('aws-jwt-verify', () => ({
   CognitoJwtVerifier: mockCognitoJwtVerifier,
 }));
 
+jest.mock('../../../lib', () => ({
+  ...jest.requireActual('../../../lib'),
+  prismaClient: 'mockPrismaClient',
+}));
+
 describe('getUserMessages', () => {
   it('should return a 200 response code and user messages', async () => {
     const response = await request(app).get('/api/messages/mockUserId').set('Authorization', 'Bearer mockToken');
 
-    expect(getUserMessagesOperation).toHaveBeenCalledWith({ userId: 'mockUserId' });
+    expect(getUserMessagesOperation).toHaveBeenCalledWith(
+      { userId: 'mockUserId' },
+      { prismaClient: 'mockPrismaClient' },
+    );
 
     expect(response.statusCode).toBe(200);
 

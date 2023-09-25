@@ -1,4 +1,4 @@
-import { mockMessage, prismaMock } from '../../../../lib';
+import { Context, MockContext, createMockContext, mockMessage } from '../../../../lib';
 import { deleteMessageOperation } from './deleteMessageOperation';
 
 jest.mock('../../utils/configureAWS', () => ({
@@ -11,20 +11,28 @@ jest.mock('@aws-sdk/client-s3', () => ({
   DeleteObjectCommand: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
+let mockContext: MockContext;
+let context: Context;
+
+beforeEach(() => {
+  mockContext = createMockContext();
+  context = mockContext as unknown as Context;
+});
+
 describe('deleteMessageOperation', () => {
   it('should delete a message', async () => {
-    prismaMock.messages.findUnique.mockResolvedValue(mockMessage);
-    prismaMock.messages.delete.mockResolvedValue(mockMessage);
+    mockContext.prismaClient.messages.findUnique.mockResolvedValue(mockMessage);
+    mockContext.prismaClient.messages.delete.mockResolvedValue(mockMessage);
 
-    const deletedMessage = await deleteMessageOperation({ messageId: 'testMessageId' });
+    const deletedMessage = await deleteMessageOperation({ messageId: 'testMessageId' }, context);
 
     expect(deletedMessage).toBe(mockMessage);
   });
 
   it('should throw an error if message does not exist', async () => {
-    prismaMock.messages.findUnique.mockResolvedValue(null);
+    mockContext.prismaClient.messages.findUnique.mockResolvedValue(null);
 
-    await expect(() => deleteMessageOperation({ messageId: 'testMessageId' })).rejects.toThrow(
+    await expect(() => deleteMessageOperation({ messageId: 'testMessageId' }, context)).rejects.toThrow(
       'Message with id testMessageId not found',
     );
   });
