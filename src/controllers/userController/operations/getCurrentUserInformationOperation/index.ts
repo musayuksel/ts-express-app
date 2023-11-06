@@ -1,0 +1,1 @@
+export { getCurrentUserInformationOperation } from './getCurrentUserInformationOperation';

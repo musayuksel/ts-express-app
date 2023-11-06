@@ -1,0 +1,1 @@
+export { getCurrentUserInformation } from './getCurrentUserInformation';

@@ -7,6 +7,7 @@ import { updateUserSchema } from '../schemas/user.schema';
 const router = express.Router();
 
 router.get('/', userController.getAllUsers);
+router.get('/me', userController.getCurrentUserInformation);
 router.post('/', validateReqBodySchema(userSchema), userController.createNewUser);
 router.patch('/', validateReqBodySchema(updateUserSchema), userController.updateUser);
 
