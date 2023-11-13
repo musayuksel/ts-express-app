@@ -244,3 +244,31 @@ export const createMessageOperation = async (messagePayload: CreateMessageOperat
   });
 };
 ```
+
+### createMessageOperation.test.ts
+
+This test verifies that the `createMessageOperation` function creates a new message. It mocks the necessary dependencies and their resolved values. It then calls the `createMessageOperation` function and verifies that the result is as expected.
+
+```typescript
+import { createMessageOperation } from 'path/for/operations';
+
+describe('createMessageOperation', () => {
+  const mockMessagePayload = {"mockMessagePayload object"};
+
+  it('should create a new message', async () => {
+    // Mock the necessary dependencies and their resolved values
+    const mockChannelWithUsers = { ...mockChannel, users: [{ ...mockUser }] };
+    mockContext.prismaClient.messages.create.mockResolvedValue(mockMessage);
+    mockContext.prismaClient.channels.findUnique.mockResolvedValue(mockChannelWithUsers);
+
+    // Call the createMessageOperation function
+    const createdMessage = await createMessageOperation(mockMessagePayload, context);
+
+    // Verify the result
+    expect(createdMessage).toBe(mockMessage);
+  });
+});
+
+```
+
+This approach allows us to test the operation in isolation and focus solely on its business logic. By mocking the dependencies of the `createMessageOperation` function, we eliminate the need for **complex setups** and **external dependencies**. This leads to faster and more reliable tests. Additionally, it provides control over the behavior of the dependencies, reduces test flakiness, and enables faster feedback loops during the development process.
