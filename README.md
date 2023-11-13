@@ -12,7 +12,7 @@ Let's dive into the exciting world of building application architecture!
 
 This architecture ensures a robust and scalable foundation for our application.
 
-![Architecture Diagram](images/diagram.png)
+![Architecture Diagram](./Images/diagram.png)
 
 ### 1. AWS Cognito Authentication Middleware
 
