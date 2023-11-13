@@ -2,17 +2,17 @@
 
 Welcome to this blog post on building a secure Express application with TypeScript, AWS Cognito and Prisma ORM. In this project, I had the opportunity to upskill myself in various areas including Node.js, TypeScript, clean code principles, best practices, AWS Cognito, validation using Joi, ORM concepts, and more.
 
-Throughout the project, I worked closely with my mentor,[Robert Wilkinson](https://robertwilkinson.dev/), who provided invaluable guidance and support. With his help, I was able to develop a robust and secure application architecture that I'm excited to share with you.
+Throughout the project, I worked closely with my mentor, [Robert Wilkinson](https://robertwilkinson.dev/), who provided invaluable guidance and support. With his help, I was able to develop a robust and secure application architecture that I'm excited to share with you.
 
 I'll cover each component in detail, providing step-by-step instructions, code examples, and explanations of the core concepts. By the end of this post, you'll have a comprehensive understanding of each technology and how it fits into the overall architecture.
 
-Let's dive into the exciting world of building application architecture!
+Let's dive into the application architecture!
 
 ## Section 1: Overview of the architecture
 
 This architecture ensures a robust and scalable foundation for our application.
 
-![Architecture Diagram](./Images/diagram.png)
+![Architecture Diagram](./Images/architectureDiagram.png)
 
 ### 1. AWS Cognito Authentication Middleware
 
@@ -272,3 +272,56 @@ describe('createMessageOperation', () => {
 ```
 
 This approach allows us to test the operation in isolation and focus solely on its business logic. By mocking the dependencies of the `createMessageOperation` function, we eliminate the need for **complex setups** and **external dependencies**. This leads to faster and more reliable tests. Additionally, it provides control over the behavior of the dependencies, reduces test flakiness, and enables faster feedback loops during the development process.
+
+## Section 3: Building the Database
+
+### Prisma Schema
+
+Here is the example Prisma model that creates all the correct relations, as seen in the ER diagram:
+
+```prisma
+model Channels {
+  id          String     @id @default(uuid())
+  channelName String     @unique @db.VarChar(255)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  messages    Messages[]
+  users       Users[]
+}
+
+model Messages {
+  id         String   @id @default(uuid())
+  content    String
+  attachment String?  @db.VarChar(255)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  channel    Channels @relation(fields: [channelId], references: [id])
+  channelId  String
+  user       Users    @relation(fields: [userId], references: [id])
+  userId     String
+}
+
+model Users {
+  id        String     @id @default(uuid())
+  userName  String     @unique @db.VarChar(255)
+  userEmail String     @unique @db.VarChar(255)
+  firstName String     @db.VarChar(255)
+  lastName  String?    @db.VarChar(255)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  messages  Messages[]
+  channels  Channels[]
+}
+```
+
+### ER Diagram
+
+![ER Diagram](./Images/dbER.png)
+
+## Relations
+
+1. **Users to Messages**: Each user can have multiple messages, creating a _one-to-many_ relationship. The `Users` model has a `messages` field that represents this relationship.
+
+2. **Channels to Messages**: Each channel can have multiple messages, creating a _one-to-many_ relationship. The `Channels` model has a `messages` field that represents this relationship.
+
+3. **Users to Channels**: Each user can be associated with multiple channels, creating a _many-to-many_ relationship. The `Users` model has a `channels` field, and the `Channels` model has a `users` field. These fields represent the relationship between users and channels.
