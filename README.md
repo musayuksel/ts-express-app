@@ -106,9 +106,7 @@ dotenv.config();
 const PORT = parseInt(process.env.PORT || '3000');
 
 async function startServer() {
-  app.listen(PORT, () => {
-    console.info(`Server is running on port ${PORT}`);
-  });
+  app.listen(PORT, () => ...);
 }
 
 startServer();
@@ -155,24 +153,20 @@ export default router;
 
 ### createMessage.ts
 
-This file contains the code to handle the creation of new messages. It receives the request, extracts the necessary data, and passes it to the createMessageOperation. The controller focuses only on request handling and delegates the actual database operations to the createMessageOperation.
+This file contains the code to handle the creation of new messages. It _receives_ the request, extracts the necessary data, and _passes it_ to the _createMessageOperation_. The controller focuses **only** on request handling and delegates the actual database operations to the createMessageOperation.
 
 ```typescript
-interface CreateMessageRequest<T> extends Request {
-  body: T;
-}
-
 export const createMessage = async (
   req: CreateMessageRequest<CreateMessageOperationTypes>,
   res: Response,
   next: NextFunction,
 ) => {
-  const { content, userId, channelId, attachment } = req.body;
 
-  const messagePayload = { content, userId, channelId, attachment };
+    //...
+    const messagePayload = //{...};
 
-  try {
-    const newMessage = await createMessageOperation(messagePayload, { prismaClient });
+    try {
+        const newMessage = await createMessageOperation(messagePayload, { prismaClient });
 
     res.json(/*sendProperResponse(newMessage)*/);
   } catch (error) {
@@ -183,7 +177,7 @@ export const createMessage = async (
 
 ### createMessage.test.ts
 
-This file contains the unit tests for the createMessage controller. It only tests the request handling logic and does not test the createMessageOperation.
+This file contains the unit tests for the createMessage controller. It _only tests the request handling logic_ and does not test the createMessageOperation.
 
 ```typescript
 jest.mock('path/for/operations', () => ({
@@ -203,6 +197,7 @@ describe('createMessage', () => {
       .post('/api/messages')
       .send(mockMessage);
 
+    // Only test the request handling logic
     expect(createMessageOperation).toHaveBeenCalledWith(mockMessage, {
       prismaClient: 'mockPrismaClient',
     });
@@ -220,28 +215,19 @@ This file contains the reusable business logic to create a message. It receives 
 export const createMessageOperation = async (messagePayload: CreateMessageOperationTypes, context: Context) => {
   const { userId, channelId } = messagePayload;
 
-  const currentChannel = await context.prismaClient.channels.findUnique({
-    where: {
-      id: channelId,
-    },
-    include: {
-      users: true,
-    },
-  });
+  const currentChannel = await context.prismaClient.channels// ...
 
   if (!currentChannel) {
     // handle error
   }
 
-  const isUserInChannel = currentChannel.users.find((user) => user.id === userId);
+  const isUserInChannel = // ...
 
   if (!isUserInChannel) {
     // handle error
   }
 
-  return await context.prismaClient.messages.create({
-    data: messagePayload,
-  });
+  return await context.prismaClient.messages.create// ...
 };
 ```
 
@@ -271,7 +257,7 @@ describe('createMessageOperation', () => {
 
 ```
 
-This approach allows us to test the operation in isolation and focus solely on its business logic. By mocking the dependencies of the `createMessageOperation` function, we eliminate the need for **complex setups** and **external dependencies**. This leads to faster and more reliable tests. Additionally, it provides control over the behavior of the dependencies, reduces test flakiness, and enables faster feedback loops during the development process.
+This approach allows us to test the operation in isolation and focus solely on its business logic. By mocking the dependencies of the `createMessageOperation` function, we eliminate the need for **complex setups** and **external dependencies**. This leads to faster and more reliable tests. Additionally, it provides control over the behavior of the dependencies and enables faster feedback loops during the development.
 
 ## Section 3: Building the Database
 
@@ -325,3 +311,151 @@ model Users {
 2. **Channels to Messages**: Each channel can have multiple messages, creating a _one-to-many_ relationship. The `Channels` model has a `messages` field that represents this relationship.
 
 3. **Users to Channels**: Each user can be associated with multiple channels, creating a _many-to-many_ relationship. The `Users` model has a `channels` field, and the `Channels` model has a `users` field. These fields represent the relationship between users and channels.
+
+## Section 4: Adding Global Error Handling
+
+Have you ever found yourself repeatedly throwing errors or returning errors using the `throw error` or `return error` syntax without custom error handling? This can lead to code duplication and make error handling less standard and less clean. Thankfully, by creating our own global error handler middleware, we can solve this problem in a more efficient and standardized way.
+
+Consider the following example code where errors are thrown or returned without using a custom error class:
+
+```typescript
+export const createMessage = async () => {
+    //...
+  try {
+    const newMessage = await createMessageOperation(...);
+
+    res.json(({ success: true, data: ... }));
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      error.message = `Prisma error - ${error.code}: ${error.message}`;
+      error.statusCode = 500;
+    }
+
+    res.status(error.statusCode || 500).json(({ success: false, message: error.message }));
+  }
+};
+
+// createMessageOperation.ts
+export const createMessageOperation = async (...) => {
+
+  const currentChannel = // ...
+  if (!currentChannel) {
+    // declare and throw error manually
+    const error = new Error(`Channel does not exist!`);
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const isUserInChannel = //...
+
+  if (!isUserInChannel) {
+      // declare and throw error manually
+    const error = new Error(`User is not in the channel! Please join the channel first!`);
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return await context.prismaClient.messages.create(...);
+};
+```
+
+In the above code, errors are thrown or returned using the generic `Error` class, resulting in less descriptive error messages and inconsistent error handling. Additionally, this approach requires developers to handle errors **_individually at various points in the codebase_**, which can lead to _repetitive_ and error-prone error handling logic.
+
+To solve these issues, we can create a custom custom error and utilize the global error handler middleware. Let's create a `CustomError` class and the `globalErrorHandler` middleware.
+
+```typescript
+export class CustomError extends Error {
+  statusCode: number;
+
+  constructor(message: string = 'Something went wrong on our side', statusCode: number = 500) {
+    // Default message and status code if one is not provided
+    super(message);
+    this.statusCode = statusCode;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+export const globalErrorHandler = (err: CustomError, req: Request, res: Response, next: NextFunction) => {
+  // any specific error handling logic
+  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    err.message = `Prisma error - ${err.code} : ${err.message}`;
+    err.statusCode = 500;
+  }
+
+  // send proper error response
+  res.status(err.statusCode).json({ success: false, message: err.message });
+};
+```
+
+We created the `CustomError` class, which extends the built-in `Error` class. This custom error class allows us to provide more descriptive error messages and define additional properties, such as the `statusCode`. By utilising this custom error class, we can create more meaningful and standard error objects.
+
+The `globalErrorHandler` function is a middleware that handles errors globally.
+By using the global error handler middleware, we can avoid **_repetitive error handling_** throughout our application. Instead, we can focus on throwing or returning instances of the `CustomError` class, which will be automatically caught and handled by the global error handler.
+
+Inside this middleware, we can perform specific error handling logic based on the type of error.
+For example, in the above code, we check if the error is an instance of `Prisma.PrismaClientKnownRequestError`. If it is, we modify the error message and set the status code to 500. This approach allows us to handle specific errors in a more standard and consistent way.
+
+This approach promotes cleaner and more standardized error handling, making it easier to manage and debug errors across your Node.js application.
+
+**_NOTE: This middleware will handle all errors thrown or returned. So make sure to place it at the end of the middleware chain._**
+
+For more information on global error handling, check out this [express doc!](https://expressjs.com/en/guide/error-handling.html).
+
+Here is the updated code that uses the `CustomError` class and the global error handler:
+
+```typescript
+export const createMessage = async () => {
+    //...
+  try {
+    const newMessage = await createMessageOperation(messagePayload, { prismaClient });
+
+    res.json(({ success: true, data: newMessage }));
+  } catch (error) {
+    // send error to global error handler middleware
+    next(error));
+  }
+};
+
+// createMessageOperation.ts
+export const createMessageOperation = async (some_data) => {
+
+  const currentChannel = // ....
+  if (!currentChannel) {
+      // throw CustomError for try/catch block to catch in the controller
+    throw new CustomError(`Channel does not exist!`, 404);
+  }
+
+  const isUserInChannel = // ...
+
+  if (!isUserInChannel) {
+      // throw CustomError for try/catch block to catch in the controller
+      throw new CustomError(`User is not in the channel! Please join the channel first!`, 404);
+  }
+
+  return await context.prismaClient// ...
+};
+```
+
+And lastly, we need to add the global error handler middleware to our application:
+
+```typescript
+// app.ts
+import { globalErrorHandler } from './middlewares/globalErrorHandler';
+import express, { Request, Response, NextFunction } from 'express';
+import messagesRoutes from './routes/messagesRoutes';
+
+const app = express();
+
+app.use('/api/messages', messagesRoutes);
+// ...
+
+app.use('*', (req: Request, res: Response, next: NextFunction) => {
+  const error = new Error(`Route ${req.originalUrl} not found!!!`);
+  next(error);
+});
+
+// Global error handler middleware to handle all errors
+app.use(globalErrorHandler);
+
+export { app };
+```
