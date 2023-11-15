@@ -10,7 +10,7 @@ Let's dive into the application architecture!
 
 ## Section 1: Overview of the architecture
 
-This architecture ensures a robust and scalable foundation for our application.
+In this blog, we will primarily focus on the **Route Handlers, Controllers, Operations, and the Prisma ORM**. However, before diving into those specific areas, let's briefly explore the _overall_ architecture, which provides a robust and scalable foundation for our application
 
 ![Architecture Diagram](./Images/architectureDiagram.png)
 
@@ -69,7 +69,7 @@ The operations provide a clear separation between the controller and the databas
 
 ### 7. Global Error Handler (Middleware)
 
-The Global Error Handler is a middleware component that catches errors occurring at any step of the request lifecycle. It provides a centralized mechanism to handle and respond to errors consistently. By implementing this middleware, we can gracefully handle exceptions, log errors, and send appropriate error responses to clients.
+The Global Error Handler is a middleware component that catches errors occurring at any step of the request lifecycle. It provides a centralized mechanism to handle and respond to errors consistently. By implementing this middleware, we can gracefully handle exceptions, log errors, and send appropriate error responses to clients. Again we will explore this component in more detail in the next blog.
 
 ## Section 2: Building the Application
 
@@ -334,6 +334,7 @@ export const createMessage = async () => {
     }
 
     res.status(error.statusCode || 500).json(({ success: false, message: error.message }));
+    // I've done this many times in the past, and it's not fun
   }
 };
 
@@ -353,8 +354,8 @@ export const createMessageOperation = async (...) => {
   if (!isUserInChannel) {
       // declare and throw error manually
     const error = new Error(`User is not in the channel! Please join the channel first!`);
-    error.statusCode = 404;
     throw error;
+//    yes, I've forgotten to set the status code before :(
   }
 
   return await context.prismaClient.messages.create(...);
@@ -409,7 +410,7 @@ Here is the updated code that uses the `CustomError` class and the global error 
 export const createMessage = async () => {
     //...
   try {
-    const newMessage = await createMessageOperation(messagePayload, { prismaClient });
+    const newMessage = await createMessageOperation(...);
 
     res.json(({ success: true, data: newMessage }));
   } catch (error) {
@@ -452,7 +453,7 @@ app.use('/api/messages', messagesRoutes);
 // ...
 
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
-  const error = new Error(`Route ${req.originalUrl} not found!!!`);
+  const error = new CustomError(`Route ${req.originalUrl} not found!!!`, 404);
   next(error);
 });
 
@@ -461,3 +462,5 @@ app.use(globalErrorHandler);
 
 export { app };
 ```
+
+In the above code, we added the global error handler middleware to end of the middleware chain. This middleware will handle all errors thrown or returned by our application.
