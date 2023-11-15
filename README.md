@@ -16,15 +16,21 @@ This architecture ensures a robust and scalable foundation for our application.
 
 ### 1. AWS Cognito Authentication Middleware
 
-At the core of our application's security is AWS Cognito, a powerful authentication and user management service provided by Amazon Web Services (AWS). We utilize AWS Cognito Authentication Middleware to handle user authentication. This middleware ensures that only authenticated users can access protected routes in our application.
+We use AWS Cognito Authentication Middleware to verify user authentication, allowing access only to _authenticated_ users for protected routes.
+
+In the future, we can extend this functionality by assigning different **roles** and verifying them, ensuring appropriate access privileges based on user roles.
+
+We will dive deeper into this component in the next blog post.
 
 ### 2. Route Handlers
 
-Route Handlers are responsible for handling incoming requests and directing them to the appropriate controllers. They act as the entry point for requests and are responsible for request routing and initial request processing.
+Route Handlers are responsible for handling incoming requests and **routing** them to the appropriate controllers. They act as the entry point for requests and are responsible for request routing and initial request processing.
 
 ### 3. Validation Middleware
 
-Validation Middleware plays a role in validating requests and ensuring proper data handling. We have used the popular Joi library as our choice for request validation, but you can choose any validation library that suits your preferences and requirements. The validation process ensures that incoming requests adhere to predefined schemas or rules, verifying that the data is in the correct format and meets the necessary criteria for further processing.
+Validation Middleware plays a role in validating requests and ensuring proper data handling.
+
+We will explore this component in more detail in the next blog however, here is a quick overview of how it works:
 
 By incorporating the Validation Middleware into our architecture, we can confidently handle requests, knowing that the data has been **validated** and is ready for processing by the appropriate components. This step adds an extra layer of security and reliability to our application.
 
@@ -38,7 +44,7 @@ Here are some examples of our controllers:
 
 - **Channel Controller**: The Channel Controller manages channels, which serve as containers for messages. Similarly, it passes on database operations to the Channel Operations component.
 
-- **User Controller**: The User Controller is responsible for managing user-related operations. Similarly, it passes on database operations to the User Operations component.
+- **User Controller**: The User Controller is responsible for managing a range of user-related operations, such as handling _user roles_, _updating_ user information and other user-related tasks. Similarly, it passes on database operations to the User Operations component.
 
 By following the single responsibility principle, controllers are designed to focus on request handling by delegating tasks to dedicated components. This approach ensures a clear separation of concerns, improving code organisation, maintainability, and reusability across our application.
 
@@ -126,8 +132,7 @@ app.use('/api/messages', messagesRoutes);
 // other routes
 
 app.use('*', (req: Request, res: Response, next: NextFunction) => {
-  const error = new Error(`Route ${req.originalUrl} not found!!!`);
-  next(error);
+  // handle 404 errors
 });
 
 export { app };
@@ -242,10 +247,7 @@ describe('createMessageOperation', () => {
   const mockMessagePayload = {"mockMessagePayload object"};
 
   it('should create a new message', async () => {
-    // Mock the necessary dependencies and their resolved values
-    const mockChannelWithUsers = { ...mockChannel, users: [{ ...mockUser }] };
-    mockContext.prismaClient.messages.create.mockResolvedValue(mockMessage);
-    mockContext.prismaClient.channels.findUnique.mockResolvedValue(mockChannelWithUsers);
+    // ... Mock the necessary dependencies and their resolved values
 
     // Call the createMessageOperation function
     const createdMessage = await createMessageOperation(mockMessagePayload, context);
