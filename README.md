@@ -366,6 +366,8 @@ In the above code, errors are thrown or returned using the generic `Error` class
 
 To solve these issues, we can create a custom custom error and utilize the global error handler middleware. Let's create a `CustomError` class and the `globalErrorHandler` middleware.
 
+### Custom Error Class and Global Error Handler
+
 ```typescript
 export class CustomError extends Error {
   statusCode: number;
@@ -403,6 +405,8 @@ This approach promotes cleaner and more standardized error handling, making it e
 **_NOTE: This middleware will handle all errors thrown or returned. So make sure to place it at the end of the middleware chain._**
 
 For more information on global error handling, check out this [express doc!](https://expressjs.com/en/guide/error-handling.html).
+
+### Using the CustomError class and the global error handler
 
 Here is the updated code that uses the `CustomError` class and the global error handler:
 
@@ -477,7 +481,8 @@ router.post('/', messageController.createMessage);
 
 In this code, the `createMessage` controller function is directly bound to the `/api/messages/` route without any validation. As a result, the controller assumes that the required request body parameters (content, userId, channelId, and attachment etc) will always be of the _correct_ type. However, this approach lacks safeguards against invalid or missing data, potentially leading to errors or unexpected behavior.
 
-**The Solution:**
+### Validation Middleware
+
 To address the challenges mentioned above, we can use a validation middleware that ensures the request data conforms to a specified schema. We have used the popular [Joi library](https://joi.dev/api/?v=17.9.1) as our choice for request validation, but you can choose any validation library that suits your preferences and requirements. The validation process ensures that incoming requests adhere to predefined schemas or rules, verifying that the data is in the correct format and meets the necessary criteria for further processing.
 
 ```typescript
@@ -498,13 +503,15 @@ export const validateReqBodySchema = <T,>(schema: Schema<T>) => {
 
 The `validateReqBodySchema` _middleware_ function takes a Joi schema as a parameter. Inside the middleware, it validates the `req.body` against the provided schema. If any validation errors occur, it creates a `CustomError`(which we created it in the previous section) instance with a descriptive error message and a status code of 403 (Forbidden). This standardized error handling ensures consistent and meaningful error responses for invalid request data.
 
+### Using the Validation Middleware
+
 Now, let's update the messageRoutes.ts file to apply the validation middleware to the createMessage route:
 
 ```typescript
 router.post('/', validateReqBodySchema(messageSchema), messageController.createMessage);
 ```
 
-**Yes**, it's that simple when you have a good architecture in place.
+**_YES_**, it's that simple when you have a good architecture in place.
 
 In this updated code snippet, the validateReqBodySchema middleware is used as a middleware function before the `messageController.createMessage `handler. This ensures that the req.body adheres to the specified `messageSchema` _before executing the controller logic_.
 
@@ -519,9 +526,52 @@ export const messageSchema = Joi.object({
 });
 ```
 
-In this code snippet, the messageSchema defines the expected structure and validation rules for the request body parameters (content, userId, channelId, and attachment). By utilizing a schema, we can ensure that the request data meets the required criteria and avoid potential errors caused by invalid or missing data.
+In this code snippet, the `messageSchema` defines the expected structure and validation rules for the request body parameters (_content_, _userId_, _channelId_, and _attachment_). By utilizing a schema, we can ensure that the request data meets the required criteria and avoid potential errors caused by invalid or missing data.
 
-Now our file structure looks like this:
+We are almost done with our application. But there are a few more enhancements we can make to ensure consistent and standardised API responses...
+
+## Section 6: Formatting the Response
+
+To further **standardise** our application, let's add a formatting function for the standard response objects. This function will ensure a consistent structure for our API responses. Here's an example implementation of a `formatResponse` function:
+
+```typescript
+// formatResponse.ts
+interface FormatResponseInterface<T> {
+  success: boolean;
+  data?: T;
+  message?: string;
+}
+
+export const formatResponse = <T,>({ success, data, message }: FormatResponseInterface<T>) => ({
+  success,
+  data,
+  message,
+});
+```
+
+With the `formatResponse` function, we can easily format our API responses in a standardised way.
+
+- **success** (boolean): Indicates whether the request was successful.
+- **data** (optional): The data payload for success responses.
+- **message** (optional): The message for error responses.
+
+Here's an example response:
+
+```typescript
+{
+    success: true,
+    data: {/* ... */}
+}
+// or for error responses
+{
+    success: false,
+    message: "Some proper error message"
+}
+```
+
+Now we have a more _consistent_ and _standard_ approach to handling and **formatting our API responses**.
+
+Our file structure looks like this:
 
 ```bash
 - src
@@ -551,9 +601,12 @@ Now our file structure looks like this:
     - messages.schema.ts
       # other schemas
     - index.ts
+  - utils
+    - formatResponse.ts
+    - formatResponse.interface.ts
+    - index.ts
 ```
 
-Conclusion
-By incorporating a validation middleware into your Express application, you can ensure that the incoming request data is validated against a specified schema. This approach promotes consistency, reduces code duplication, and provides meaningful error responses for invalid data. With a standardized validation process, you can enhance the reliability and security of your application.
+And there you have it! We have successfully built a robust and scalable application architecture.
 
-Make sure to place the validation middleware appropriately in the middleware chain, and define the validation schemas for each relevant route. By adhering to these best practices, you can build a more robust and maintainable Express application.
+In the next blog, we will explore how to add authentication to our application using AWS Cognito. And with this clean architecture, we will see how easy it is to add new features to our application. Stay tuned!
