@@ -316,7 +316,7 @@ model Users {
 
 ## Section 4: Adding Global Error Handling
 
-Have you ever found yourself repeatedly throwing errors or returning errors using the `throw error` or `return error` syntax without custom error handling? This can lead to code duplication and make error handling less standard and less clean. Thankfully, by creating our own global error handler middleware, we can solve this problem in a more efficient and standardized way.
+Have you ever found yourself repeatedly throwing errors or returning errors using the `throw error` or `return error` syntax without custom error handling? This can lead to **_code duplication_** and make error handling **_less standard_** and **_less clean_**. Thankfully, by creating our own global error handler middleware, we can solve this problem in a more efficient and standardized way.
 
 Consider the following example code where errors are thrown or returned without using a custom error class:
 
@@ -334,7 +334,7 @@ export const createMessage = async () => {
     }
 
     res.status(error.statusCode || 500).json(({ success: false, message: error.message }));
-    // I've done this many times in the past, and it's not fun
+    // I've done this many times in the past, and it's not fun :)
   }
 };
 
@@ -355,7 +355,7 @@ export const createMessageOperation = async (...) => {
       // declare and throw error manually
     const error = new Error(`User is not in the channel! Please join the channel first!`);
     throw error;
-//    yes, I've forgotten to set the status code before :(
+//    yes, I've forgotten to set the proper status code before :(
   }
 
   return await context.prismaClient.messages.create(...);
@@ -392,7 +392,7 @@ export const globalErrorHandler = (err: CustomError, req: Request, res: Response
 
 We created the `CustomError` class, which extends the built-in `Error` class. This custom error class allows us to provide more descriptive error messages and define additional properties, such as the `statusCode`. By utilising this custom error class, we can create more meaningful and standard error objects.
 
-The `globalErrorHandler` function is a middleware that handles errors globally.
+The `globalErrorHandler` function is a **middleware** that handles errors globally.
 By using the global error handler middleware, we can avoid **_repetitive error handling_** throughout our application. Instead, we can focus on throwing or returning instances of the `CustomError` class, which will be automatically caught and handled by the global error handler.
 
 Inside this middleware, we can perform specific error handling logic based on the type of error.
@@ -443,9 +443,7 @@ And lastly, we need to add the global error handler middleware to our applicatio
 
 ```typescript
 // app.ts
-import { globalErrorHandler } from './middlewares/globalErrorHandler';
-import express, { Request, Response, NextFunction } from 'express';
-import messagesRoutes from './routes/messagesRoutes';
+//import ...
 
 const app = express();
 
@@ -464,3 +462,98 @@ export { app };
 ```
 
 In the above code, we added the global error handler middleware to end of the middleware chain. This middleware will handle all errors thrown or returned by our application.
+
+But still we have some problems with our code. Let's explore them.
+
+## Section 5: Adding Validation Middleware
+
+In a typical Express application, handling the validation of request data can become challenging. Without a standardized approach, we often end up writing repetitive and error-prone validation logic throughout our codebase. This can lead to code **duplication**, **inconsistencies**, and **difficulties in debugging and maintaining** the application.
+
+Consider the following example code for the `messageRoutes.ts` file, where request data is not validated:
+
+```typescript
+router.post('/', messageController.createMessage);
+```
+
+In this code, the `createMessage` controller function is directly bound to the `/api/messages/` route without any validation. As a result, the controller assumes that the required request body parameters (content, userId, channelId, and attachment etc) will always be of the _correct_ type. However, this approach lacks safeguards against invalid or missing data, potentially leading to errors or unexpected behavior.
+
+**The Solution:**
+To address the challenges mentioned above, we can use a validation middleware that ensures the request data conforms to a specified schema. We have used the popular [Joi library](https://joi.dev/api/?v=17.9.1) as our choice for request validation, but you can choose any validation library that suits your preferences and requirements. The validation process ensures that incoming requests adhere to predefined schemas or rules, verifying that the data is in the correct format and meets the necessary criteria for further processing.
+
+```typescript
+type Schema<T> = ObjectSchema<T>;
+
+export const validateReqBodySchema = <T,>(schema: Schema<T>) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const { error }: ValidationResult = schema.validate(req.body);
+
+    if (error) {
+      return next(new CustomError(`ValidationError: ${error.message}`, 403));
+    }
+
+    next();
+  };
+};
+```
+
+The `validateReqBodySchema` _middleware_ function takes a Joi schema as a parameter. Inside the middleware, it validates the `req.body` against the provided schema. If any validation errors occur, it creates a `CustomError`(which we created it in the previous section) instance with a descriptive error message and a status code of 403 (Forbidden). This standardized error handling ensures consistent and meaningful error responses for invalid request data.
+
+Now, let's update the messageRoutes.ts file to apply the validation middleware to the createMessage route:
+
+```typescript
+router.post('/', validateReqBodySchema(messageSchema), messageController.createMessage);
+```
+
+**Yes**, it's that simple when you have a good architecture in place.
+
+In this updated code snippet, the validateReqBodySchema middleware is used as a middleware function before the `messageController.createMessage `handler. This ensures that the req.body adheres to the specified `messageSchema` _before executing the controller logic_.
+
+To define the **schema** for the request body, we can utilize a schema definition file, such as `schemas`. Here's an example of a schema using Joi:
+
+```typescript
+export const messageSchema = Joi.object({
+  content: Joi.string().required(),
+  userId: Joi.string().required(),
+  channelId: Joi.string().required(),
+  attachment: Joi.string().allow(null),
+});
+```
+
+In this code snippet, the messageSchema defines the expected structure and validation rules for the request body parameters (content, userId, channelId, and attachment). By utilizing a schema, we can ensure that the request data meets the required criteria and avoid potential errors caused by invalid or missing data.
+
+Now our file structure looks like this:
+
+```bash
+- src
+  - server.ts
+  - app.ts
+  - routes
+    - messagesRoutes.ts
+    # other routes
+  - controllers
+    - messagesController
+        - createMessage
+            - createMessage.test.ts
+            - createMessage.ts
+            - index.ts
+    # other controllers
+        - operations
+            - createMessageOperation
+              - createMessageOperation.test.ts
+              - createMessageOperation.ts
+              - createMessageOperation.types.ts
+              - index.ts
+        # other operations
+  - middlewares
+    - globalErrorHandler.ts
+    - validationMiddleware.ts
+  - schemas
+    - messages.schema.ts
+      # other schemas
+    - index.ts
+```
+
+Conclusion
+By incorporating a validation middleware into your Express application, you can ensure that the incoming request data is validated against a specified schema. This approach promotes consistency, reduces code duplication, and provides meaningful error responses for invalid data. With a standardized validation process, you can enhance the reliability and security of your application.
+
+Make sure to place the validation middleware appropriately in the middleware chain, and define the validation schemas for each relevant route. By adhering to these best practices, you can build a more robust and maintainable Express application.
